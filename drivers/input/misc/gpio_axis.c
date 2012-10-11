@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 /* #warning compile out */
 #if 0
+=======
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7
 /* drivers/input/misc/gpio_axis.c
  *
  * Copyright (C) 2007 Google, Inc.
@@ -191,4 +194,7 @@ err_bad_device_index:
 err_alloc_axis_state_failed:
 	return ret;
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7

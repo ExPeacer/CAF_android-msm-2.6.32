@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 /* #warning compile out */
 #if 0
+=======
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7
 /* drivers/input/misc/gpio_input.c
  *
  * Copyright (C) 2007 Google, Inc.
@@ -130,6 +133,10 @@ static enum hrtimer_restart gpio_event_input_timer_func(struct hrtimer *timer)
 				key_entry->code, i, key_entry->gpio, pressed);
 		input_event(ds->input_devs->dev[key_entry->dev], ds->info->type,
 			    key_entry->code, pressed);
+<<<<<<< HEAD
+=======
+		input_sync(ds->input_devs->dev[key_entry->dev]);
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7
 	}
 
 #if 0
@@ -197,6 +204,10 @@ static irqreturn_t gpio_event_input_irq_handler(int irq, void *dev_id)
 				key_entry->gpio, pressed);
 		input_event(ds->input_devs->dev[key_entry->dev], ds->info->type,
 			    key_entry->code, pressed);
+<<<<<<< HEAD
+=======
+		input_sync(ds->input_devs->dev[key_entry->dev]);
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7
 	}
 	return IRQ_HANDLED;
 }
@@ -239,6 +250,10 @@ int gpio_event_input_func(struct gpio_event_input_devs *input_devs,
 {
 	int ret;
 	int i;
+<<<<<<< HEAD
+=======
+	int irq;
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7
 	unsigned long irqflags;
 	struct gpio_event_input_info *di;
 	struct gpio_input_state *ds = *data;
@@ -247,16 +262,32 @@ int gpio_event_input_func(struct gpio_event_input_devs *input_devs,
 
 	if (func == GPIO_EVENT_FUNC_SUSPEND) {
 		if (ds->use_irq)
+<<<<<<< HEAD
 			for (i = 0; i < di->keymap_size; i++)
 				disable_irq(gpio_to_irq(di->keymap[i].gpio));
+=======
+			for (i = 0; i < di->keymap_size; i++) {
+				irq = gpio_to_irq(di->keymap[i].gpio);
+				disable_irq(irq);
+				disable_irq_wake(irq);
+			}
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7
 		hrtimer_cancel(&ds->timer);
 		return 0;
 	}
 	if (func == GPIO_EVENT_FUNC_RESUME) {
 		spin_lock_irqsave(&ds->irq_lock, irqflags);
 		if (ds->use_irq)
+<<<<<<< HEAD
 			for (i = 0; i < di->keymap_size; i++)
 				enable_irq(gpio_to_irq(di->keymap[i].gpio));
+=======
+			for (i = 0; i < di->keymap_size; i++) {
+				irq = gpio_to_irq(di->keymap[i].gpio);
+				enable_irq(irq);
+				enable_irq_wake(irq);
+			}
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7
 		hrtimer_start(&ds->timer, ktime_set(0, 0), HRTIMER_MODE_REL);
 		spin_unlock_irqrestore(&ds->irq_lock, irqflags);
 		return 0;
@@ -352,4 +383,7 @@ err_bad_keymap:
 err_ds_alloc_failed:
 	return ret;
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 64eb108... drivers/input/misc/ - SEMC files import #7
