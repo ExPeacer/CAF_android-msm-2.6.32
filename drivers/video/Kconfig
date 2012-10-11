@@ -2189,6 +2189,11 @@ config FB_MSM_MDP40
 	  Say Y here if this is msm7x30 variant platform.
 endchoice
 
+config FB_MSM_MSM2_1_DISABLE
+	depends on FB_MSM_MDP40
+	bool "MSM2.1 HW fix disable"
+	default n
+
 config FB_MSM_EBI2
 	bool
 	default n
@@ -2215,6 +2220,19 @@ config FB_MSM_DTV
 	bool
 	default n
 
+config FB_MSM_PANEL_ESD
+	bool "PANEL ESD support"
+	default n
+
+config FB_MSM_MDDI_LCD_WINDOW_ADJUST
+	depends on FB_MSM_MDDI
+	bool "MSM MDDI LCD windows adjust"
+	default n
+
+config FB_MSM_MDDI_NOVATEK_DISABLE_MDDI
+	bool "Disable MDDI"
+	default n
+
 config FB_MSM_EXTMDDI
 	bool
 	default n
@@ -2234,6 +2252,11 @@ config FB_MSM_MDDI_TOSHIBA_COMMON_VGA
 	default n
 
 config FB_MSM_MDDI_ORISE
+	bool
+	select FB_MSM_MDDI
+	default n
+
+config FB_MSM_MDDI_QUICKVX
 	bool
 	select FB_MSM_MDDI
 	default n
@@ -2373,6 +2396,42 @@ config FB_MSM_MDDI_TOSHIBA_WVGA
 	---help---
 	  Support for MDDI Toshiba (800x480) WVGA panel
 
+config FB_MSM_MDDI_SONY_HVGA_LCD
+	depends on FB_MSM
+	bool "MDDI Sony HVGA LCD Panel"
+	select FB_MSM_MDDI
+	---help---
+	  Support for Sony HVGA MDDI LCD Panel (320x480)
+
+config FB_MSM_MDDI_HITACHI_HVGA_LCD
+	depends on FB_MSM
+	bool "MDDI Hitachi HVGA LCD Panel"
+	select FB_MSM_MDDI
+	---help---
+	  Support for Hitachi HVGA MDDI LCD Panel (320x480)
+
+config FB_MSM_MDDI_SII_HVGA_LCD
+	depends on FB_MSM
+	bool "MDDI Sii HVGA LCD Panel"
+	select FB_MSM_MDDI
+	default n
+	---help---
+	  Support for Sii HVGA MDDI LCD Panel (320x480)
+
+config FB_MSM_MDDI_AUO_HVGA_LCD
+	depends on FB_MSM
+	bool "MDDI Auo HVGA LCD Panel"
+	select FB_MSM_MDDI
+	default n
+	---help---
+	  Support for Auo HVGA MDDI LCD Panel (320x480)
+
+config FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "MDDI Novatek FWVGA panel"
+	select FB_MSM_MDDI
+	---help---
+	  Support for MDDI Novatek (854x480) FWVGA panel
+
 config FB_MSM_MDDI_SHARP_QVGA_128x128
 	bool "MDDI Sharp QVGA Dual Panel"
 	select FB_MSM_MDDI
@@ -2394,6 +2453,81 @@ config FB_MSM_PANEL_NONE
 	---help---
 	  This will disable LCD panel
 endchoice
+
+#
+# Extracted panels which will be connected to the MDDI Novatek MCU
+#
+config MDDI_NOVATEK_PANEL_TMD_MDP42
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "TMD MDP42 Panel"
+	default n
+	---help---
+	  Support for TMD MDP42 panel connected
+	  to the MDDI Novatek micro controller
+
+config MDDI_NOVATEK_PANEL_SHARP_LS040T8LX01
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "SHARP LS040T8LX01 Panel"
+	default n
+	---help---
+	  Support for SHARP LS040T8LX01 panel connected
+	  to the MDDI Novatek micro controller
+
+config MDDI_NOVATEK_PANEL_SHARP_LS042T3LX
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "SHARP LS042T3LX Panel"
+	default n
+	---help---
+	  Support for SHARP_LS042T3LX panel connected
+	  to the MDDI Novatek micro controller
+
+config MDDI_NOVATEK_PANEL_SONY_ACX424AKM
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "SONY ACX424AKM Panel"
+	default n
+	---help---
+	  Support for SONY_ACX424AKM panel connected
+	  to the MDDI Novatek micro controller
+
+config MDDI_NOVATEK_PANEL_SONY_ACX427AK
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "SONY ACX427AK Panel"
+	default n
+	---help---
+	  Support for SONY_ACX427AK panel connected
+	  to the MDDI Novatek micro controller
+
+config MDDI_NOVATEK_PANEL_SONY_ACX424AK
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "SONY ACX424AK Panel"
+	default n
+	---help---
+	  Support for SONY_ACX424AK panel connected
+	  to the MDDI Novatek micro controller
+
+config MDDI_NOVATEK_PANEL_HITACHI_DX09D09VM
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "HITACHI DX09D09VM Panel"
+	default n
+	---help---
+	  Support for HITACHI_DX09D09VM panel connected
+	  to the MDDI Novatek micro controller
+
+config MDDI_NOVATEK_PANEL_SHARP_LS033T3LX01
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "SHARP LS033T3LX01 Panel"
+	default n
+	---help---
+	  Support for SHARP_LS033T3LX01 panel connected
+	  to the MDDI Novatek micro controller
+
+config MDDI_NOVATEK_PANEL_TMD_LT033MDV1000
+	depends on FB_MSM_MDDI_NOVATEK_FWVGA
+	bool "TMD LT033MDV1000 Panel"
+	default n
+	---help---
+	  Support for TMD_LT033MDV1000 panel connected
+	  to the MDDI Novatek micro controller
 
 choice
 	prompt "Secondary LCD Panel"
@@ -2421,6 +2555,10 @@ config FB_MSM_SECONDARY_PANEL_NONE
 	  No secondary panel
 endchoice
 
+config FB_MDDI_DISABLE_REVERSE
+	bool "DISABLE REVERSE"
+	default n
+
 config FB_MSM_HDMI_COMMON
 	bool
 	default n
@@ -2433,6 +2571,15 @@ config FB_MSM_HDMI_ADV7520_PANEL
 	default n
         ---help---
         Support for LCDC 720p HDMI panel attached to ADV7520
+
+config FB_MSM_HDMI_ADV7520_PANEL_HDCP_SUPPORT
+        depends on FB_MSM_HDMI_ADV7520_PANEL
+        bool "Use HDCP mode"
+        default y
+        ---help---
+          Support for HDCP mode for ADV7520 HDMI 720p Panel
+          Choose to enable HDCP
+
 
 config FB_MSM_HDMI_MSM_PANEL
 	depends on FB_MSM_MDP40
@@ -2459,6 +2606,16 @@ config FB_MSM_HDMI_MSM_PANEL_HDCP_SUPPORT
 	  Choose to enable HDCP
 	  .
 	  .
+
+config FB_MSM_HDMI_SII9024A_PANEL
+	depends on FB_MSM_MDP40
+	bool "LCDC HDMI SiI9024A 720p Panel"
+	select FB_MSM_DTV
+	select UIO
+	select UIO_PDRV_GENIRQ
+	default n
+	---help---
+	  Support for LCDC 720p HDMI panel attached to SiI9024A
 
 config FB_MSM_TVOUT_NTSC
 	bool
