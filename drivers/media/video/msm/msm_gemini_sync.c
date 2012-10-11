@@ -1,4 +1,8 @@
 /* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -56,8 +60,18 @@ inline void *msm_gemini_q_out(struct msm_gemini_q *q_p)
 		data = q_entry_p->data;
 		kfree(q_entry_p);
 	} else {
+<<<<<<< HEAD
 		GMN_PR_ERR("%s:%d] %s no entry\n", __func__, __LINE__,
 			q_p->name);
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+		GMN_DBG("%s:%d] %s no entry\n", __func__, __LINE__,
+			q_p->name);
+#else
+		GMN_PR_ERR("%s:%d] %s no entry\n", __func__, __LINE__,
+			q_p->name);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	}
 
 	return data;
@@ -146,6 +160,24 @@ inline int msm_gemini_q_unblock(struct msm_gemini_q *q_p)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+inline void msm_gemini_outbuf_q_cleanup(struct msm_gemini_q *q_p)
+{
+	struct msm_gemini_core_buf *buf_p;
+	GMN_DBG("%s:%d] %s\n", __func__, __LINE__, q_p->name);
+	do {
+		buf_p = msm_gemini_q_out(q_p);
+		if (buf_p) {
+			msm_gemini_platform_p2v(buf_p->file);
+			GMN_DBG("%s:%d] %s\n", __func__, __LINE__, q_p->name);
+			kfree(buf_p);
+		}
+	} while (buf_p);
+	q_p->unblck = 0;
+}
+
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 inline void msm_gemini_q_cleanup(struct msm_gemini_q *q_p)
 {
 	void *data;
@@ -201,7 +233,15 @@ int msm_gemini_evt_get(struct msm_gemini_device *pgmn_dev,
 	buf_p = msm_gemini_q_out(&pgmn_dev->evt_q);
 
 	if (!buf_p) {
+<<<<<<< HEAD
 		GMN_PR_ERR("%s:%d] no buffer\n", __func__, __LINE__);
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+		GMN_DBG("%s:%d] no buffer\n", __func__, __LINE__);
+#else
+		GMN_PR_ERR("%s:%d] no buffer\n", __func__, __LINE__);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		return -EAGAIN;
 	}
 
@@ -240,6 +280,13 @@ void msm_gemini_err_irq(struct msm_gemini_device *pgmn_dev,
 	GMN_PR_ERR("%s:%d] error: %d\n", __func__, __LINE__, event);
 
 	buf.vbuf.type = MSM_GEMINI_EVT_ERR;
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+	if (event == MSM_GEMINI_HW_IRQ_STATUS_WE_Y_BUFFER_OVERFLOW_MASK)
+		buf.vbuf.type = MSM_GEMINI_EVT_BUFFER_OVER;
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	rc = msm_gemini_q_in_buf(&pgmn_dev->evt_q, &buf);
 	if (!rc)
 		rc = msm_gemini_q_wakeup(&pgmn_dev->evt_q);
@@ -275,7 +322,15 @@ int msm_gemini_we_pingpong_irq(struct msm_gemini_device *pgmn_dev,
 		rc = msm_gemini_core_we_buf_update(buf_out);
 		kfree(buf_out);
 	} else {
+<<<<<<< HEAD
 		GMN_PR_ERR("%s:%d] no output buffer\n", __func__, __LINE__);
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+		GMN_DBG("%s:%d] no output buffer\n", __func__, __LINE__);
+#else
+		GMN_PR_ERR("%s:%d] no output buffer\n", __func__, __LINE__);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		rc = -2;
 	}
 
@@ -285,6 +340,27 @@ int msm_gemini_we_pingpong_irq(struct msm_gemini_device *pgmn_dev,
 	return rc;
 }
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+int msm_gemini_re_register_we_buf(struct msm_gemini_core_buf *buf_out)
+{
+	int rc = 0;
+
+	GMN_DBG("%s:%d] Enter\n", __func__, __LINE__);
+
+	if (buf_out) {
+		rc = msm_gemini_core_we_buf_update(buf_out);
+	} else {
+		GMN_DBG("%s:%d] no output buffer\n", __func__, __LINE__);
+		rc = -2;
+	}
+
+	return rc;
+}
+#endif
+
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 int msm_gemini_output_get(struct msm_gemini_device *pgmn_dev, void __user *to)
 {
 	struct msm_gemini_core_buf *buf_p;
@@ -296,8 +372,18 @@ int msm_gemini_output_get(struct msm_gemini_device *pgmn_dev, void __user *to)
 	buf_p = msm_gemini_q_out(&pgmn_dev->output_rtn_q);
 
 	if (!buf_p) {
+<<<<<<< HEAD
 		GMN_PR_ERR("%s:%d] no output buffer return\n",
 			__func__, __LINE__);
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+		GMN_DBG("%s:%d] no output buffer return\n",
+			__func__, __LINE__);
+#else
+		GMN_PR_ERR("%s:%d] no output buffer return\n",
+			__func__, __LINE__);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		return -EAGAIN;
 	}
 
@@ -384,7 +470,15 @@ int msm_gemini_fe_pingpong_irq(struct msm_gemini_device *pgmn_dev,
 		kfree(buf_out);
 		msm_gemini_core_fe_start();
 	} else {
+<<<<<<< HEAD
 		GMN_PR_ERR("%s:%d] no input buffer\n", __func__, __LINE__);
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+		GMN_DBG("%s:%d] no input buffer\n", __func__, __LINE__);
+#else
+		GMN_PR_ERR("%s:%d] no input buffer\n", __func__, __LINE__);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		rc = -2;
 	}
 
@@ -404,8 +498,18 @@ int msm_gemini_input_get(struct msm_gemini_device *pgmn_dev, void __user * to)
 	buf_p = msm_gemini_q_out(&pgmn_dev->input_rtn_q);
 
 	if (!buf_p) {
+<<<<<<< HEAD
 		GMN_PR_ERR("%s:%d] no input buffer return\n",
 			__func__, __LINE__);
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+		GMN_DBG("%s:%d] no input buffer return\n",
+			__func__, __LINE__);
+#else
+		GMN_PR_ERR("%s:%d] no input buffer return\n",
+			__func__, __LINE__);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		return -EAGAIN;
 	}
 
@@ -476,11 +580,27 @@ int msm_gemini_irq(int event, void *context, void *data)
 {
 	struct msm_gemini_device *pgmn_dev =
 		(struct msm_gemini_device *) context;
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+	struct msm_gemini_core_buf *we_buf;
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	switch (event) {
 	case MSM_GEMINI_HW_MASK_COMP_FRAMEDONE:
 		msm_gemini_framedone_irq(pgmn_dev, data);
 		msm_gemini_we_pingpong_irq(pgmn_dev, data);
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+		we_buf = msm_gemini_core_get_we_nonactive_buffer();
+		if (we_buf) {
+			msm_gemini_q_in_buf(&pgmn_dev->output_rtn_q, we_buf);
+			msm_gemini_q_wakeup(&pgmn_dev->output_rtn_q);
+		}
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		break;
 
 	case MSM_GEMINI_HW_MASK_COMP_FE:
@@ -488,7 +608,18 @@ int msm_gemini_irq(int event, void *context, void *data)
 		break;
 
 	case MSM_GEMINI_HW_MASK_COMP_WE:
+<<<<<<< HEAD
 		msm_gemini_we_pingpong_irq(pgmn_dev, data);
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+		if (data)
+			msm_gemini_re_register_we_buf(data);
+		msm_gemini_err_irq(pgmn_dev,
+			MSM_GEMINI_HW_IRQ_STATUS_WE_Y_BUFFER_OVERFLOW_MASK);
+#else
+		msm_gemini_we_pingpong_irq(pgmn_dev, data);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		break;
 
 	case MSM_GEMINI_HW_MASK_COMP_RESET_ACK:
@@ -534,7 +665,11 @@ int __msm_gemini_open(struct msm_gemini_device *pgmn_dev)
 
 	msm_gemini_q_cleanup(&pgmn_dev->evt_q);
 	msm_gemini_q_cleanup(&pgmn_dev->output_rtn_q);
+<<<<<<< HEAD
 	msm_gemini_q_cleanup(&pgmn_dev->output_buf_q);
+=======
+	msm_gemini_outbuf_q_cleanup(&pgmn_dev->output_buf_q);
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	msm_gemini_q_cleanup(&pgmn_dev->input_rtn_q);
 	msm_gemini_q_cleanup(&pgmn_dev->input_buf_q);
 
@@ -554,6 +689,16 @@ int __msm_gemini_release(struct msm_gemini_device *pgmn_dev)
 	pgmn_dev->open_count--;
 	mutex_unlock(&pgmn_dev->lock);
 
+<<<<<<< HEAD
+=======
+	msm_gemini_core_release();
+	msm_gemini_q_cleanup(&pgmn_dev->evt_q);
+	msm_gemini_q_cleanup(&pgmn_dev->output_rtn_q);
+	msm_gemini_outbuf_q_cleanup(&pgmn_dev->output_buf_q);
+	msm_gemini_q_cleanup(&pgmn_dev->input_rtn_q);
+	msm_gemini_outbuf_q_cleanup(&pgmn_dev->input_buf_q);
+
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	if (pgmn_dev->open_count)
 		GMN_PR_ERR(KERN_ERR "%s: multiple opens\n", __func__);
 
@@ -613,6 +758,10 @@ int msm_gemini_ioctl_hw_cmds(struct msm_gemini_device *pgmn_dev,
 
 	if (copy_from_user(hw_cmds_p, arg, len)) {
 		GMN_PR_ERR("%s:%d] failed\n", __func__, __LINE__);
+<<<<<<< HEAD
+=======
+		kfree(hw_cmds_p);
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		return -EFAULT;
 	}
 
@@ -623,10 +772,18 @@ int msm_gemini_ioctl_hw_cmds(struct msm_gemini_device *pgmn_dev,
 	if (is_copy_to_user >= 0) {
 		if (copy_to_user(arg, hw_cmds_p, len)) {
 			GMN_PR_ERR("%s:%d] failed\n", __func__, __LINE__);
+<<<<<<< HEAD
 			return -EFAULT;
 		}
 	}
 
+=======
+			kfree(hw_cmds_p);
+			return -EFAULT;
+		}
+	}
+	kfree(hw_cmds_p);
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	return 0;
 }
 
@@ -656,8 +813,18 @@ int msm_gemini_start(struct msm_gemini_device *pgmn_dev, void * __user arg)
 			msm_gemini_core_we_buf_update(buf_out);
 			kfree(buf_out);
 		} else {
+<<<<<<< HEAD
 			GMN_PR_ERR("%s:%d] no output buffer\n",
 			__func__, __LINE__);
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+			GMN_DBG("%s:%d] no output buffer\n",
+			__func__, __LINE__);
+#else
+			GMN_PR_ERR("%s:%d] no output buffer\n",
+			__func__, __LINE__);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			break;
 		}
 	}

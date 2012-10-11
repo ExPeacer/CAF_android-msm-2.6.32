@@ -66,7 +66,11 @@ const struct reg_struct	imx074_reg_pat[2] = {
 	{
 		0x2D, /*pll_multiplier*/
 		0x06, /*frame_length_lines_hi 0x0340*/
+<<<<<<< HEAD
 		0x48, /* frame_length_lines_lo 0x0341*/
+=======
+		0x2D, /* frame_length_lines_lo 0x0341*/
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		0x00, /* y_addr_start 0x347 */
 		0x2F, /* y_add_end 0x034b */
 		0x08, /* x_output_size_msb0x034c */

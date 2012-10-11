@@ -1,4 +1,8 @@
 /* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -55,6 +59,13 @@ int msm_gemini_hw_pingpong_update(struct msm_gemini_hw_pingpong *pingpong_hw,
 void *msm_gemini_hw_pingpong_irq(struct msm_gemini_hw_pingpong *pingpong_hw);
 void *msm_gemini_hw_pingpong_active_buffer(struct msm_gemini_hw_pingpong
 	*pingpong_hw);
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+void *msm_gemini_hw_pingpong_nonactive_buffer(struct msm_gemini_hw_pingpong
+	*pingpong_hw);
+#endif
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 void msm_gemini_hw_irq_clear(uint32_t, uint32_t);
 int msm_gemini_hw_irq_get_status(void);

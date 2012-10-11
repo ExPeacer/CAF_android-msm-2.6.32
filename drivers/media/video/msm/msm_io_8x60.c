@@ -312,7 +312,11 @@ int msm_camio_clk_enable(enum msm_camio_clk_type clktype)
 	case CAMIO_VPE_CLK:
 		camio_vpe_clk =
 		clk = clk_get(NULL, "vpe_clk");
+<<<<<<< HEAD
 		msm_camio_clk_rate_set_2(clk, 160000000);
+=======
+		msm_camio_clk_set_min_rate(clk, 150000000);
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		break;
 
 	case CAMIO_VPE_PCLK:
@@ -409,6 +413,14 @@ void msm_camio_clk_rate_set_2(struct clk *clk, int rate)
 	clk_set_rate(clk, rate);
 }
 
+<<<<<<< HEAD
+=======
+void msm_camio_clk_set_min_rate(struct clk *clk, int rate)
+{
+	clk_set_min_rate(clk, rate);
+}
+
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 static irqreturn_t msm_io_csi_irq(int irq_num, void *data)
 {
 	uint32_t irq;
@@ -492,15 +504,22 @@ int msm_camio_enable(struct platform_device *pdev)
 	int rc = 0;
 	struct msm_camera_sensor_info *sinfo = pdev->dev.platform_data;
 	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
+<<<<<<< HEAD
+=======
+	uint32_t val;
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	camio_dev = pdev;
 	camio_ext = camdev->ioext;
 	camio_clk = camdev->ioclk;
 
+<<<<<<< HEAD
 	camdev->camera_gpio_on();
 	msm_camera_vreg_enable();
 
 	msm_camio_clk_enable(CAMIO_CAM_MCLK_CLK);
+=======
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	msm_camio_clk_enable(CAMIO_VFE_CLK);
 	msm_camio_clk_enable(CAMIO_CSI0_VFE_CLK);
 	msm_camio_clk_enable(CAMIO_CSI1_VFE_CLK);
@@ -528,6 +547,25 @@ int msm_camio_enable(struct platform_device *pdev)
 	if (rc < 0)
 		goto csi_irq_fail;
 
+<<<<<<< HEAD
+=======
+	msleep(10);
+	val = (20 <<
+		MIPI_PHY_D0_CONTROL2_SETTLE_COUNT_SHFT) |
+		(0x0F << MIPI_PHY_D0_CONTROL2_HS_TERM_IMP_SHFT) |
+		(0x0 << MIPI_PHY_D0_CONTROL2_LP_REC_EN_SHFT) |
+		(0x1 << MIPI_PHY_D0_CONTROL2_ERR_SOT_HS_EN_SHFT);
+	CDBG("%s MIPI_PHY_D0_CONTROL2 val=0x%x\n", __func__, val);
+	msm_io_w(val, csibase + MIPI_PHY_D0_CONTROL2);
+	msm_io_w(val, csibase + MIPI_PHY_D1_CONTROL2);
+	msm_io_w(val, csibase + MIPI_PHY_D2_CONTROL2);
+	msm_io_w(val, csibase + MIPI_PHY_D3_CONTROL2);
+
+	val = (0x0F << MIPI_PHY_CL_CONTROL_HS_TERM_IMP_SHFT) |
+		(0x0 << MIPI_PHY_CL_CONTROL_LP_REC_EN_SHFT);
+	CDBG("%s MIPI_PHY_CL_CONTROL val=0x%x\n", __func__, val);
+	msm_io_w(val, csibase + MIPI_PHY_CL_CONTROL);
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	return 0;
 
 csi_irq_fail:
@@ -543,8 +581,11 @@ common_fail:
 	msm_camio_clk_disable(CAMIO_VFE_PCLK);
 	msm_camio_clk_disable(CAMIO_CSI0_PCLK);
 	msm_camio_clk_disable(CAMIO_CSI1_PCLK);
+<<<<<<< HEAD
 /* Disable CAMIO_CSI1_VFE_CLK, CAMIO_CSI1_CLK,
 	CAMIO_CSI1_PCLK for the secondary sensor */
+=======
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	msm_camera_vreg_disable();
 	camdev->camera_gpio_off();
 	return rc;
@@ -552,15 +593,39 @@ common_fail:
 
 void msm_camio_disable(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct msm_camera_sensor_info *sinfo = pdev->dev.platform_data;
 	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
+=======
+	uint32_t val;
+
+	val = (20 <<
+		MIPI_PHY_D0_CONTROL2_SETTLE_COUNT_SHFT) |
+		(0x0F << MIPI_PHY_D0_CONTROL2_HS_TERM_IMP_SHFT) |
+		(0x0 << MIPI_PHY_D0_CONTROL2_LP_REC_EN_SHFT) |
+		(0x1 << MIPI_PHY_D0_CONTROL2_ERR_SOT_HS_EN_SHFT);
+	CDBG("%s MIPI_PHY_D0_CONTROL2 val=0x%x\n", __func__, val);
+	msm_io_w(val, csibase + MIPI_PHY_D0_CONTROL2);
+	msm_io_w(val, csibase + MIPI_PHY_D1_CONTROL2);
+	msm_io_w(val, csibase + MIPI_PHY_D2_CONTROL2);
+	msm_io_w(val, csibase + MIPI_PHY_D3_CONTROL2);
+
+	val = (0x0F << MIPI_PHY_CL_CONTROL_HS_TERM_IMP_SHFT) |
+		(0x0 << MIPI_PHY_CL_CONTROL_LP_REC_EN_SHFT);
+	CDBG("%s MIPI_PHY_CL_CONTROL val=0x%x\n", __func__, val);
+	msm_io_w(val, csibase + MIPI_PHY_CL_CONTROL);
+	msleep(10);
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	free_irq(camio_ext.csiirq, 0);
 	iounmap(csibase);
 	release_mem_region(camio_ext.csiphy, camio_ext.csisz);
 	CDBG("disable clocks\n");
 
+<<<<<<< HEAD
 	msm_camio_clk_disable(CAMIO_CAM_MCLK_CLK);
+=======
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	msm_camio_clk_disable(CAMIO_CSI0_VFE_CLK);
 	msm_camio_clk_disable(CAMIO_CSI0_CLK);
 	msm_camio_clk_disable(CAMIO_CSI1_VFE_CLK);
@@ -568,10 +633,33 @@ void msm_camio_disable(struct platform_device *pdev)
 	msm_camio_clk_disable(CAMIO_VFE_PCLK);
 	msm_camio_clk_disable(CAMIO_CSI0_PCLK);
 	msm_camio_clk_disable(CAMIO_CSI1_PCLK);
+<<<<<<< HEAD
 /* Disable CAMIO_CSI1_VFE_CLK, CAMIO_CSI1_CLK,
 	CAMIO_CSI1_PCLK for the secondary sensor */
 	msm_camera_vreg_disable();
 	camdev->camera_gpio_off();
+=======
+}
+
+int msm_camio_sensor_clk_on(struct platform_device *pdev)
+{
+	struct msm_camera_sensor_info *sinfo = pdev->dev.platform_data;
+	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
+	msm_camera_vreg_enable();
+	msleep(10);
+	camdev->camera_gpio_on();
+	return msm_camio_clk_enable(CAMIO_CAM_MCLK_CLK);
+}
+
+int msm_camio_sensor_clk_off(struct platform_device *pdev)
+{
+	struct msm_camera_sensor_info *sinfo = pdev->dev.platform_data;
+	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
+	msm_camera_vreg_disable();
+	camdev->camera_gpio_off();
+	return 0;
+
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 }
 
 void msm_camio_vfe_blk_reset(void)
@@ -594,7 +682,11 @@ int msm_camio_probe_off(struct platform_device *pdev)
 	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
 	msm_camera_vreg_disable();
 	camdev->camera_gpio_off();
+<<<<<<< HEAD
 	return msm_camio_clk_disable(CAMIO_CAM_MCLK_CLK);
+=======
+	return 0;
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 }
 
 int msm_camio_csi_config(struct msm_camera_csi_params *csi_params)
@@ -634,7 +726,11 @@ int msm_camio_csi_config(struct msm_camera_csi_params *csi_params)
 	/* settle_cnt is very sensitive to speed!
 	increase this value to run at higher speeds */
 	val = (csi_params->settle_cnt <<
+<<<<<<< HEAD
 			MIPI_PHY_D0_CONTROL2_SETTLE_COUNT_SHFT) |
+=======
+		MIPI_PHY_D0_CONTROL2_SETTLE_COUNT_SHFT) |
+>>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		(0x0F << MIPI_PHY_D0_CONTROL2_HS_TERM_IMP_SHFT) |
 		(0x1 << MIPI_PHY_D0_CONTROL2_LP_REC_EN_SHFT) |
 		(0x1 << MIPI_PHY_D0_CONTROL2_ERR_SOT_HS_EN_SHFT);

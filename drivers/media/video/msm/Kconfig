@@ -12,12 +12,36 @@ config MT9D112
 	default y
 	---help---
 	  MICRON 2M YUV Sensor
+
 config IMX074
 	bool "Sensor IMX074 (BAYER 13.5M)"
 	depends on MSM_CAMERA && ARCH_MSM8X60
 	default y
 	---help---
 	SONY 13.5 MP Bayer Sensor
+
+config SEIX006
+    bool "Sensor sexi006"
+    depends on MSM_CAMERA
+    default y
+    ---help---
+      This is a camera driver for the sexi006 sensor
+          
+config OVM7692
+    bool "Sensor ovm7692"
+	depends on MSM_CAMERA
+	---help---
+	  Omnivision VGA fixed focus sensor
+
+config MT9V114
+    bool "Sensor mt9v114"
+	depends on MSM_CAMERA
+	---help---
+	  AAC/Heptagon VGA fixed focus sensor
+#	Used as front sensor
+#	Uses parallel interface
+#	Previously known as Hydrogen
+
 config WEBCAM_OV7692
 	bool "Sensor OV7692 (VGA YUV)"
 	depends on MSM_CAMERA && ARCH_MSM8X60
@@ -27,6 +51,7 @@ config WEBCAM_OV7692
 #	This Senosr is used as a webcam.
 #	This uses the CSI interface.
 #	Need to enable CSI1 clks for this sensor.
+
 config VX6953
 	bool "Sensor VX6953 (BAYER 5M)"
 	depends on MSM_CAMERA && ARCH_MSM7X30
@@ -83,6 +108,20 @@ config VB6801
 	---help---
 	  5M with flash
 
+config SEMC_CAMERA_MODULE
+	bool "SEMC specific camera (Main camera)"
+	depends on MSM_CAMERA
+	default y
+	---help---
+	  SEMC specific camera module
+
+config SEMC_SUB_CAMERA_MODULE
+	bool "SEMC specific camera (Sub camera)"
+	depends on MSM_CAMERA
+	default y
+	---help---
+	  SEMC specific sub camera module
+
 config MSM_CAMERA_FLASH
 	bool "Qualcomm MSM camera flash support"
 	depends on MSM_CAMERA
@@ -103,3 +142,21 @@ config MSM_VPE
 	default y
 	---help---
 	  Enable support for Video Pre-processing Engine
+
+config MSM_VPE_STANDALONE
+	tristate "Qualcomm MSM Video Pre-processing Engine support"
+	depends on MSM_CAMERA && (ARCH_MSM7X30 || ARCH_MSM8X60)
+	default y
+	---help---
+	  Enable support for Video Pre-processing Engine
+
+config QUP_EXCLUSIVE_TO_CAMERA
+	bool "QUP exclusive to camera"
+	depends on MSM_CAMERA
+	default y
+	---help---
+	  This flag enabled states that QUP
+	  is exclusive to camera. In case this
+	  is disabled, the lvs1 voltage is enabled
+	  by QUP in the board file as QUP is used by
+	  applications other than camera.
