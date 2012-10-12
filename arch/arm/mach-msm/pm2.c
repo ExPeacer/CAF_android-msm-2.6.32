@@ -935,6 +935,17 @@ static struct msm_pm_smem_t *msm_pm_smem_data;
 static uint32_t *msm_pm_reset_vector;
 static atomic_t msm_pm_init_done = ATOMIC_INIT(0);
 
+static int msm_pm_modem_busy(void)
+{
+	if (!(smsm_get_state(SMSM_POWER_MASTER_DEM) & DEM_MASTER_SMSM_READY)) {
+		MSM_PM_DPRINTK(MSM_PM_DEBUG_POWER_COLLAPSE,
+			KERN_INFO, "%s(): master not ready\n", __func__);
+		return -EBUSY;
+	}
+
+	return 0;
+}
+
 /*
  * Power collapse the Apps processor.  This function executes the handshake
  * protocol with Modem.
@@ -1435,6 +1446,26 @@ void arch_idle(void)
 			allow[i] = false;
 	}
 
+	if (allow[MSM_PM_SLEEP_MODE_POWER_COLLAPSE] ||
+		allow[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN]) {
+		uint32_t wait_us = CONFIG_MSM_IDLE_WAIT_ON_MODEM;
+		while (msm_pm_modem_busy() && wait_us) {
+			if (wait_us > 100) {
+				udelay(100);
+				wait_us -= 100;
+			} else {
+				udelay(wait_us);
+				wait_us = 0;
+			}
+		}
+
+		if (msm_pm_modem_busy()) {
+			allow[MSM_PM_SLEEP_MODE_POWER_COLLAPSE] = false;
+			allow[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN]
+				= false;
+		}
+	}
+
 #ifdef CONFIG_MSM_IDLE_STATS
 	ret = msm_clock_require_tcxo(clk_ids, MAX_NR_CLKS);
 #elif defined(CONFIG_CLOCK_BASED_SLEEP_LIMIT)
@@ -1643,6 +1674,9 @@ static int msm_pm_enter(suspend_state_t state)
 			sleep_limit |= SLEEP_RESOURCE_MEMORY_BIT0;
 #endif
 
+		for (i = 0; i < 30 && msm_pm_modem_busy(); i++)
+			udelay(500);
+
 		ret = msm_pm_power_collapse(
 			false, msm_pm_max_sleep_time, sleep_limit);
 
@@ -1739,6 +1773,16 @@ static struct notifier_block msm_reboot_notifier = {
 	.notifier_call = msm_reboot_call,
 };
 
+static int msm_panic_call(struct notifier_block *this,
+			  unsigned long event, void *ptr)
+{
+	restart_reason = 0xC0DEDEAD;
+	return NOTIFY_DONE;
+}
+
+static struct notifier_block msm_panic_notifier = {
+	.notifier_call = msm_panic_call,
+};
 
 /******************************************************************************
  *
@@ -1777,6 +1821,7 @@ static int __init msm_pm_init(void)
 	pm_power_off = msm_pm_power_off;
 	arm_pm_restart = msm_pm_restart;
 	register_reboot_notifier(&msm_reboot_notifier);
+	atomic_notifier_chain_register(&panic_notifier_list, &msm_panic_notifier);
 
 	msm_pm_smem_data = smem_alloc(SMEM_APPS_DEM_SLAVE_DATA,
 		sizeof(*msm_pm_smem_data));
@@ -1840,4 +1885,4 @@ static int __init msm_pm_init(void)
 	return 0;
 }
 
-late_initcall(msm_pm_init);
+late_initcall_sync(msm_pm_init);
