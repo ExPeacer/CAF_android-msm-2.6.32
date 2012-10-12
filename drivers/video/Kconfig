@@ -2313,10 +2313,6 @@ config FB_MSM_LCDC_WXGA
 	select FB_MSM_LCDC_PANEL
 	default n
 
-choice
-	prompt "LCD Panel"
-	default FB_MSM_MDDI_AUTO_DETECT
-
 config FB_MSM_LCDC_PRISM_WVGA_PANEL
 	depends on FB_MSM_LCDC_HW
 	bool "LCDC Prism WVGA Panel"
@@ -2452,7 +2448,6 @@ config FB_MSM_PANEL_NONE
 	bool "NONE"
 	---help---
 	  This will disable LCD panel
-endchoice
 
 #
 # Extracted panels which will be connected to the MDDI Novatek MCU
