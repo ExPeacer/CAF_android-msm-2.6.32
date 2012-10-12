@@ -1,9 +1,6 @@
 /* Header file for:
-<<<<<<< HEAD
  * Cypress TrueTouch(TM) Standard Product touchscreen drivers.
-=======
  * Cypress TrueTouch(TM) Standard Product I2C touchscreen driver.
->>>>>>> e0d0d20... include/linux/ - SEMC files import #13
  * include/linux/cyttsp.h
  *
  * Copyright (C) 2009, 2010 Cypress Semiconductor, Inc.
@@ -29,7 +26,6 @@
  * Contact Cypress Semiconductor at www.cypress.com
  *
  */
-<<<<<<< HEAD
 
 
 #ifndef __CYTTSP_H__
@@ -456,7 +452,6 @@
 	#define CY_GEST_GRP4	0x00
 #endif	/* CY_USE_GEST_GRP4 */
 
-=======
 #include <linux/input.h>
 
 #ifndef _CYTTSP_H_
@@ -528,12 +523,10 @@ enum cyttsp_powerstate {
 	CY_SLEEP_STATE,
 	CY_UNSURE_STATE,
 };
->>>>>>> e0d0d20... include/linux/ - SEMC files import #13
 
 struct cyttsp_platform_data {
 	u32 maxx;
 	u32 maxy;
-<<<<<<< HEAD
 	u32 flags;
 	u8 gen;
 	u8 use_st;
@@ -726,7 +719,6 @@ struct cyttsp_bootloader_data_t {
 #endif
 
 #endif /* __CYTTSP_H__ */
-=======
 	u32 maxz;
 	u32 flags;
 	enum cyttsp_gen gen;
@@ -757,4 +749,3 @@ struct cyttsp_bootloader_data_t {
 };
 
 #endif /* _CYTTSP_H_ */
->>>>>>> e0d0d20... include/linux/ - SEMC files import #13
