@@ -132,6 +132,27 @@ obj-$(CONFIG_ARCH_MSM7X30) += board-msm7x30.o devices-msm7x30.o
 obj-$(CONFIG_ARCH_MSM7X30) += clock-local.o clock-7x30.o acpuclock-7x30.o
 obj-$(CONFIG_ARCH_MSM7X25) += board-msm7x27.o devices-msm7x25.o
 
+obj-$(CONFIG_MACH_SEMC_ZEUS) += board-semc_zeus.o
+obj-$(CONFIG_MACH_SEMC_MOGAMI) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-mogami_cdb.o leds-mogami_cdb.o gpio-mogami_cdb.o charger-mogami_cdb.o
+obj-$(CONFIG_MACH_SEMC_ANZU) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-anzu.o leds-anzu.o gpio-anzu.o charger-anzu.o
+obj-$(CONFIG_MACH_SEMC_HALLON) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-hallon.o leds-hallon.o gpio-hallon.o charger-hallon.o fpc_test-hallon.o
+obj-$(CONFIG_MACH_SEMC_IYOKAN) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-iyokan.o leds-iyokan.o gpio-iyokan.o charger-iyokan.o
+obj-$(CONFIG_MACH_SEMC_URUSHI) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-urushi.o leds-urushi.o gpio-urushi.o charger-urushi.o
+obj-$(CONFIG_MACH_SEMC_SMULTRON) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-smultron.o leds-smultron.o gpio-smultron.o charger-smultron.o
+obj-$(CONFIG_MACH_SEMC_MANGO) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-mango.o leds-mango.o gpio-mango.o charger-mango.o
+obj-$(CONFIG_MACH_SEMC_COCONUT) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-coconut.o leds-coconut.o gpio-coconut.o charger-coconut.o
+obj-$(CONFIG_MACH_SEMC_STRAWBERRY) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-strawberry.o leds-strawberry.o gpio-strawberry.o charger-strawberry.o
+obj-$(CONFIG_MACH_SEMC_AKANE) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-akane.o leds-akane.o gpio-akane.o charger-akane.o keypad-pmic-mogami.o keypad-pmic-akane.o
+obj-$(CONFIG_MACH_SEMC_AZUSA) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-azusa.o leds-azusa.o gpio-azusa.o charger-azusa.o keypad-pmic-mogami.o keypad-pmic-azusa.o
+obj-$(CONFIG_MACH_SEMC_SATSUMA) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-satsuma.o leds-satsuma.o gpio-satsuma.o charger-satsuma.o
+obj-$(CONFIG_MACH_SEMC_AZAMI) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-azami.o leds-azami.o gpio-azami.o charger-azami.o
+obj-$(CONFIG_MACH_SEMC_AYAME) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-anzu.o leds-anzu.o gpio-anzu.o charger-anzu.o
+obj-$(CONFIG_MACH_SEMC_HAIDA) += board-semc_mogami.o board-semc_mogami-rfkill.o keypad-haida.o leds-haida.o gpio-haida.o charger-haida.o
+obj-$(CONFIG_MOGAMI_VIBRATOR) += vibrator-mogami.o
+
+obj-$(CONFIG_MACH_SEMC_ZEUS) += keypad-zeus.o
+obj-$(CONFIG_MACH_SEMC_ZEUS) += board-semc_zeus-wifi.o board-semc_zeus-rfkill.o
+
 obj-$(CONFIG_MACH_SAPPHIRE) += board-sapphire.o board-sapphire-gpio.o
 obj-$(CONFIG_MACH_SAPPHIRE) += board-sapphire-keypad.o board-sapphire-panel.o
 obj-$(CONFIG_MACH_SAPPHIRE) += board-sapphire-mmc.o board-sapphire-wifi.o
@@ -163,3 +184,15 @@ obj-$(CONFIG_ARCH_MSM7X27)	+= gpiomux.o gpiomux-7x00.o gpiomux-7x27.o
 obj-$(CONFIG_ARCH_MSM7X30)	+= gpiomux.o gpiomux-7x00.o gpiomux-7x30.o
 obj-$(CONFIG_ARCH_QSD8X50)	+= gpiomux.o gpiomux-7x00.o gpiomux-8x50.o
 obj-$(CONFIG_ARCH_MSM8X60)	+= gpiomux.o gpiomux-8x60.o
+
+ifdef CONFIG_MSM_RPC_OEM_RAPI
+	obj-$(CONFIG_BATTERY_SEMC_ARCH)	+= semc_battery_data.o
+endif
+
+ifdef CONFIG_ARCH_MSM7X30
+	obj-$(CONFIG_SIMPLE_REMOTE_PLATFORM) += simple_remote_msm7x30_pf.o
+endif
+
+obj-$(CONFIG_PMIC_TIME) += pmic_time.o
+
+obj-$(CONFIG_SEMC_MOGAMI_FELICA_SUPPORT) += semc_mogami_felica.o
