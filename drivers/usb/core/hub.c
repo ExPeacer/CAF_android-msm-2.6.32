@@ -6,6 +6,7 @@
  * (C) Copyright 1999 Gregory P. Smith
  * (C) Copyright 2001 Brad Hards (bhards@bigpond.net.au)
  * Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2010 Sony Ericsson Mobile Communications AB.
  *
  */
 
@@ -1701,9 +1702,12 @@ static int usb_enumerate_device_otg(struct usb_device *udev)
 	}
 out:
 	if (!is_targeted(udev)) {
-
+#ifndef CONFIG_USB_OTG_NOTIFICATION
 		otg_send_event(OTG_EVENT_DEV_NOT_SUPPORTED);
-
+#else
+		snprintf(udev->otg_dev_info, sizeof(udev->otg_dev_info),
+				"OTG_DEVICE_NOT_SUPPORTED");
+#endif
 		/* Maybe it can talk to us, though we can't talk to it.
 		 * (Includes HNP test device.)
 		 */
@@ -1712,7 +1716,9 @@ out:
 			if (err < 0)
 				dev_dbg(&udev->dev, "HNP fail, %d\n", err);
 		}
+#ifndef CONFIG_USB_OTG_NOTIFICATION
 		err = -ENOTSUPP;
+#endif
 	} else if (udev->bus->hnp_support &&
 		udev->portnum == udev->bus->otg_port) {
 		/* HNP polling is introduced in OTG supplement Rev 2.0
@@ -1723,6 +1729,14 @@ out:
 		schedule_delayed_work(&udev->bus->hnp_polling,
 			msecs_to_jiffies(THOST_REQ_POLL));
 	}
+#ifdef CONFIG_USB_OTG_NOTIFICATION
+	else if (udev->config &&
+			udev->config->desc.bMaxPower * 2 > udev->bus_mA) {
+		dev_dbg(&udev->dev, "Exceeds power limit\n");
+		snprintf(udev->otg_dev_info, sizeof(udev->otg_dev_info),
+				"OTG_DEVICE_OVER_CURRENT");
+	}
+#endif
 #endif
 	return err;
 }
@@ -2792,14 +2806,22 @@ hub_port_init (struct usb_hub *hub, struct usb_device *udev, int port1,
 					buf->bMaxPacketSize0;
 			kfree(buf);
 
-			retval = hub_port_reset(hub, port1, udev, delay);
-			if (retval < 0)		/* error or disconnect */
-				goto fail;
-			if (oldspeed != udev->speed) {
-				dev_dbg(&udev->dev,
-					"device reset changed speed!\n");
-				retval = -ENODEV;
-				goto fail;
+			/*
+			 * If it is a HSET Test device, we don't issue a
+			 * second reset which results in failure due to
+			 * speed change.
+			 */
+			if (le16_to_cpu(buf->idVendor) != 0x1a0a) {
+				retval = hub_port_reset(hub, port1, udev,
+							 delay);
+				if (retval < 0)	/* error or disconnect */
+					goto fail;
+				if (oldspeed != udev->speed) {
+					dev_dbg(&udev->dev,
+					       "device reset changed speed!\n");
+					retval = -ENODEV;
+					goto fail;
+				}
 			}
 			if (r) {
 				dev_err(&udev->dev,

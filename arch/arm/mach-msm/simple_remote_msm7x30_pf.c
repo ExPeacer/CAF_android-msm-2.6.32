@@ -1241,7 +1241,7 @@ static int simple_remote_pf_enable_hp_amp(u8 enable)
 
 		simple_remote_pf_enable_vregs(1);
 
-		adie_codec_powerup(1);
+//		adie_codec_powerup(1);
 
 		if (0 > marimba_read(&config, 0x33,
 				     &loc_dat->x33_orig_val, 1)) {
@@ -1369,7 +1369,7 @@ static int simple_remote_pf_enable_hp_amp(u8 enable)
 			goto error;
 		}
 
-		adie_codec_powerup(0);
+//		adie_codec_powerup(0);
 		simple_remote_pf_enable_vregs(0);
 		loc_dat->hpamp_enabled = false;
 	}

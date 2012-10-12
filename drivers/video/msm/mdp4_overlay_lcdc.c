@@ -112,13 +112,14 @@ int mdp_lcdc_on(struct platform_device *pdev)
 		ptype = mdp4_overlay_format2type(mfd->fb_imgType);
 		if (ptype < 0)
 			printk(KERN_INFO "%s: format2type failed\n", __func__);
-		pipe = mdp4_overlay_pipe_alloc(ptype);
+		pipe = mdp4_overlay_pipe_alloc(ptype, FALSE);
 		if (pipe == NULL)
 			printk(KERN_INFO "%s: pipe_alloc failed\n", __func__);
 		pipe->pipe_used++;
 		pipe->mixer_stage  = MDP4_MIXER_STAGE_BASE;
 		pipe->mixer_num  = MDP4_MIXER0;
 		pipe->src_format = mfd->fb_imgType;
+		mdp4_overlay_panel_mode(pipe->mixer_num, MDP4_PANEL_LCDC);
 		ret = mdp4_overlay_format2pipe(pipe);
 		if (ret < 0)
 			printk(KERN_INFO "%s: format2pipe failed\n", __func__);
@@ -286,7 +287,7 @@ void mdp4_lcdc_overlay(struct msm_fb_data_type *mfd)
 	buf += fbi->var.xoffset * bpp +
 		fbi->var.yoffset * fbi->fix.line_length;
 
-	mutex_lock(&mfd->dma->ov_mutex);
+	down(&mfd->dma->ov_sem);
 
 	pipe = lcdc_pipe;
 	pipe->srcp0_addr = (uint32) buf;
@@ -306,6 +307,6 @@ void mdp4_lcdc_overlay(struct msm_fb_data_type *mfd)
 	mdp_disable_irq(MDP_OVERLAY0_TERM);
 
 	mdp4_stat.kickoff_lcdc++;
-
-	mutex_unlock(&mfd->dma->ov_mutex);
+	mdp4_overlay_resource_release();
+	up(&mfd->dma->ov_sem);
 }

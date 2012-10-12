@@ -52,10 +52,6 @@ static struct msm_camera_io_ext camio_ext;
 static struct resource *appio, *mdcio;
 void __iomem *appbase, *mdcbase;
 
-<<<<<<< HEAD
-static struct msm_camera_io_ext camio_ext;
-=======
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 static struct resource *appio, *mdcio;
 void __iomem *appbase, *mdcbase;
 
@@ -150,54 +146,6 @@ int msm_camio_enable(struct platform_device *pdev)
 		goto apps_no_mem;
 	}
 
-<<<<<<< HEAD
-	mdcio = request_mem_region(camio_ext.mdcphy,
-		camio_ext.mdcsz, pdev->name);
-	if (!mdcio) {
-		rc = -EBUSY;
-		goto mdc_busy;
-	}
-
-	mdcbase = ioremap(camio_ext.mdcphy,
-		camio_ext.mdcsz);
-	if (!mdcbase) {
-		rc = -ENOMEM;
-		goto mdc_no_mem;
-	}
-
-	camdev->camera_gpio_on();
-
-	msm_camio_clk_enable(CAMIO_VFE_CLK);
-	msm_camio_clk_enable(CAMIO_MDC_CLK);
-	msm_camio_clk_enable(CAMIO_VFE_MDC_CLK);
-	return 0;
-
-mdc_no_mem:
-	release_mem_region(camio_ext.mdcphy, camio_ext.mdcsz);
-mdc_busy:
-	iounmap(appbase);
-apps_no_mem:
-	release_mem_region(camio_ext.appphy, camio_ext.appsz);
-enable_fail:
-	return rc;
-}
-
-void msm_camio_disable(struct platform_device *pdev)
-{
-	struct msm_camera_sensor_info *sinfo = pdev->dev.platform_data;
-	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
-
-	iounmap(mdcbase);
-	release_mem_region(camio_ext.mdcphy, camio_ext.mdcsz);
-	iounmap(appbase);
-	release_mem_region(camio_ext.appphy, camio_ext.appsz);
-
-	camdev->camera_gpio_off();
-
-	msm_camio_clk_disable(CAMIO_VFE_CLK);
-	msm_camio_clk_disable(CAMIO_MDC_CLK);
-	msm_camio_clk_disable(CAMIO_VFE_MDC_CLK);
-=======
 	msm_camio_clk_enable(CAMIO_VFE_CLK);
 	msm_camio_clk_enable(CAMIO_MDC_CLK);
 	return 0;
@@ -250,7 +198,6 @@ void msm_camio_disable(struct platform_device *pdev)
 	release_mem_region(camio_ext.appphy, camio_ext.appsz);
 	msm_camio_clk_disable(CAMIO_VFE_CLK);
 	msm_camio_clk_disable(CAMIO_MDC_CLK);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 }
 
 void msm_disable_io_gpio_clk(struct platform_device *pdev)

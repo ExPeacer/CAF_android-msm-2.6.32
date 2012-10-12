@@ -83,7 +83,11 @@ enum chg_type {
 	USB_CHG_TYPE__SDP,
 	USB_CHG_TYPE__CARKIT,
 	USB_CHG_TYPE__WALLCHARGER,
-	USB_CHG_TYPE__INVALID
+	USB_CHG_TYPE__INVALID,
+#ifdef CONFIG_SUPPORT_ALIEN_USB_CHARGER
+	USB_CHG_TYPE__MIGHT_BE_HOST_PC,
+	USB_CHG_TYPE__ALIENCHARGER,
+#endif /*  CONFIG_SUPPORT_ALIEN_USB_CHARGER */
 };
 #endif
 
@@ -113,11 +117,19 @@ enum hs_drv_amplitude {
 	HS_DRV_AMPLITUDE_75_PERCENT = (3 << 2),
 };
 
+/* used to configure the analog switch to select b/w host and peripheral */
+enum usb_switch_control {
+	USB_SWITCH_PERIPHERAL = 0,	/* Configure switch in peripheral mode*/
+	USB_SWITCH_HOST,		/* Host mode */
+	USB_SWITCH_DISABLE,		/* No mode selected, shutdown power */
+};
+
 struct msm_hsusb_gadget_platform_data {
 	int *phy_init_seq;
 	void (*phy_reset)(void);
 
 	int self_powered;
+	int is_phy_status_timer_on;
 };
 
 struct msm_hsusb_platform_data {
@@ -164,6 +176,7 @@ struct msm_otg_platform_data {
 
 	int (*ldo_init) (int init);
 	int (*ldo_enable) (int enable);
+	int (*ldo_set_voltage) (int mV);
 
 	u32 			swfi_latency;
 	/* pmic notfications apis */
@@ -171,7 +184,7 @@ struct msm_otg_platform_data {
 	int (*pmic_register_vbus_sn) (void (*callback)(int online));
 	void (*pmic_unregister_vbus_sn) (void (*callback)(int online));
 	int (*pmic_enable_ldo) (int);
-	void (*setup_gpio)(unsigned int config);
+	void (*setup_gpio)(enum usb_switch_control mode);
 	u8      otg_mode;
 	void (*vbus_power) (unsigned phy_info, int on);
 
@@ -179,6 +192,9 @@ struct msm_otg_platform_data {
 	void (*chg_connected)(enum chg_type chg_type);
 	void (*chg_vbus_draw)(unsigned ma);
 	int  (*chg_init)(int init);
+	int  (*chg_is_initialized)(void);
+
+	unsigned vbus_drawable_ida;
 };
 
 struct msm_usb_host_platform_data {

@@ -1,8 +1,5 @@
 /* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
-<<<<<<< HEAD
-=======
  * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -303,13 +300,9 @@ enum  VFE_STATE {
 #define V31_SYNC_TIMER_SETTING    104
 #define V31_ASYNC_TIMER_SETTING   105
 #define V31_LIVESHOT              106
-<<<<<<< HEAD
-
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 #define V31_START_RAW_CAPTURE	  107
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 #define V31_CAMIF_OFF             0x000001E4
 #define V31_CAMIF_LEN             32
 

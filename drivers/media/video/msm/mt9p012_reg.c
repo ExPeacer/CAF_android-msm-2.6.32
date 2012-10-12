@@ -67,11 +67,7 @@ struct reg_struct const mt9p012_reg_pat[2] = {
 		972,
 
 		/* line_length_pck         REG=0x300C */
-<<<<<<< HEAD
-		3784,
-=======
 		3659,
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 		/* frame_length_lines      REG=0x300A */
 		1074,

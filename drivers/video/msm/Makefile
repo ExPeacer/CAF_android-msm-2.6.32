@@ -8,7 +8,7 @@ obj-y += mdp.o
 
 ifeq ($(CONFIG_FB_MSM_MDP40),y)
 obj-y += mdp4_util.o
-obj-$(CONFIG_DEBUG_FS) += mdp4_debugfs.o
+obj-$(CONFIG_DEBUG_FS) += mdp_debugfs.o
 else
 obj-y += mdp_hw_init.o
 obj-y += mdp_ppp.o
@@ -85,6 +85,7 @@ obj-y += mddi_sii_r61529_hvga.o
 obj-y += mddi_auo_s6d05a1_hvga.o
 obj-y += mddi_sharp.o
 obj-y += mddi_orise.o
+obj-y += mddi_quickvx.o
 else
 obj-$(CONFIG_FB_MSM_MDDI_PRISM_WVGA) += mddi_prism.o
 obj-$(CONFIG_FB_MSM_MDDI_TOSHIBA_COMMON) += mddi_toshiba.o
@@ -98,6 +99,7 @@ obj-$(CONFIG_FB_MSM_MDDI_SII_HVGA_LCD) += mddi_sii_r61529_hvga.o
 obj-$(CONFIG_FB_MSM_MDDI_AUO_HVGA_LCD) += mddi_auo_s6d05a1_hvga.o
 obj-$(CONFIG_FB_MSM_MDDI_SHARP_QVGA_128x128) += mddi_sharp.o
 obj-$(CONFIG_FB_MSM_MDDI_ORISE) += mddi_orise.o
+obj-$(CONFIG_FB_MSM_MDDI_QUICKVX) += mddi_quickvx.o
 endif
 
 obj-$(CONFIG_FB_MSM_MIPI_TOSHIBA_VIDEO_WVGA_PT) += mipi_toshiba_video_wvga_pt.o
@@ -114,8 +116,6 @@ obj-$(CONFIG_FB_MSM_LCDC_SHARP_WVGA_PT) += lcdc_sharp_wvga_pt.o
 obj-$(CONFIG_FB_MSM_HDMI_ADV7520_PANEL) += adv7520.o
 obj-$(CONFIG_FB_MSM_LCDC_ST15_WXGA) += lcdc_st15.o
 obj-$(CONFIG_FB_MSM_HDMI_MSM_PANEL) += hdmi_msm.o
-obj-$(CONFIG_FB_MSM_HDMI_COMMON) += hdmi_common.o
-obj-$(CONFIG_FB_MSM_HDMI_SII_EXTERNAL_720P) += hdmi_sii9022.o
 obj-$(CONFIG_FB_MSM_HDMI_COMMON) += hdmi_common.o
 obj-$(CONFIG_FB_MSM_HDMI_SII9024A_PANEL) += hdmi_sii9024a.o
 

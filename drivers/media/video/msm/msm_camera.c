@@ -1,8 +1,5 @@
 /* Copyright (c) 2009-2010, Code Aurora Forum. All rights reserved.
-<<<<<<< HEAD
-=======
  * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -42,16 +39,6 @@
 #include <mach/camera.h>
 #include <linux/syscalls.h>
 #include <linux/hrtimer.h>
-<<<<<<< HEAD
-DEFINE_MUTEX(hlist_mut);
-DEFINE_MUTEX(pp_prev_lock);
-DEFINE_MUTEX(pp_snap_lock);
-DEFINE_MUTEX(pp_thumb_lock);
-DEFINE_MUTEX(ctrl_cmd_lock);
-
-#define MSM_MAX_CAMERA_SENSORS 5
-#define CAMERA_STOP_SNAPSHOT 42
-=======
 DEFINE_MUTEX(ctrl_cmd_lock);
 
 spinlock_t pp_prev_spinlock;
@@ -59,7 +46,6 @@ spinlock_t pp_snap_spinlock;
 spinlock_t pp_thumb_spinlock;
 
 #define MSM_MAX_CAMERA_SENSORS 5
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 #define ERR_USER_COPY(to) pr_err("%s(%d): copy %s user\n", \
 				__func__, __LINE__, ((to) ? "to" : "from"))
@@ -106,14 +92,6 @@ int g_v4l2_opencnt;
 
 static inline void free_qcmd(struct msm_queue_cmd *qcmd)
 {
-<<<<<<< HEAD
-	if (!qcmd || !qcmd->on_heap)
-		return;
-	if (!--qcmd->on_heap)
-		kfree(qcmd);
-}
-
-=======
 	if (!qcmd || !atomic_read(&qcmd->on_heap))
 		return;
 	if (!atomic_sub_return(1, &qcmd->on_heap))
@@ -128,7 +106,6 @@ static void msm_region_init(struct msm_sync *sync)
 	spin_lock_init(&sync->pmem_stats_spinlock);
 }
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 static void msm_queue_init(struct msm_device_queue *queue, const char *name)
 {
 	spin_lock_init(&queue->lock);
@@ -188,8 +165,6 @@ static void msm_enqueue_vpe(struct msm_device_queue *queue,
 	qcmd;							\
 })
 
-<<<<<<< HEAD
-=======
 #define msm_delete_entry(queue, member, q_cmd) ({		\
 	unsigned long flags;					\
 	struct msm_device_queue *__q = (queue);			\
@@ -206,7 +181,6 @@ static void msm_enqueue_vpe(struct msm_device_queue *queue,
 	spin_unlock_irqrestore(&__q->lock, flags);		\
 })
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 #define msm_queue_drain(queue, member) do {			\
 	unsigned long flags;					\
 	struct msm_device_queue *__q = (queue);			\
@@ -214,10 +188,7 @@ static void msm_enqueue_vpe(struct msm_device_queue *queue,
 	spin_lock_irqsave(&__q->lock, flags);			\
 	CDBG("%s: draining queue %s\n", __func__, __q->name);	\
 	while (!list_empty(&__q->list)) {			\
-<<<<<<< HEAD
-=======
 		__q->len--;					\
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		qcmd = list_first_entry(&__q->list,		\
 			struct msm_queue_cmd, member);		\
 		if (qcmd) {					\
@@ -271,11 +242,7 @@ static int check_pmem_info(struct msm_pmem_info *info, int len)
 	return -EINVAL;
 }
 static int msm_pmem_table_add(struct hlist_head *ptype,
-<<<<<<< HEAD
-	struct msm_pmem_info *info)
-=======
 	struct msm_pmem_info *info, spinlock_t* pmem_spinlock)
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 {
 	struct file *file;
 	unsigned long paddr;
@@ -283,11 +250,8 @@ static int msm_pmem_table_add(struct hlist_head *ptype,
 	unsigned long len;
 	int rc;
 	struct msm_pmem_region *region;
-<<<<<<< HEAD
-=======
 	unsigned long flags;
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	rc = get_pmem_file(info->fd, &paddr, &kvstart, &len, &file);
 	if (rc < 0) {
@@ -307,17 +271,12 @@ static int msm_pmem_table_add(struct hlist_head *ptype,
 	paddr += info->offset;
 	len = info->len;
 
-<<<<<<< HEAD
-	if (check_overlap(ptype, paddr, len) < 0)
-		return -EINVAL;
-=======
 	spin_lock_irqsave(pmem_spinlock, flags);
 	if (check_overlap(ptype, paddr, len) < 0) {
 		spin_unlock_irqrestore(pmem_spinlock, flags);
 		return -EINVAL;
 	}
 	spin_unlock_irqrestore(pmem_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	CDBG("%s: type %d, paddr 0x%lx, vaddr 0x%lx\n",
 		__func__, info->type, paddr, (unsigned long)info->vaddr);
@@ -326,10 +285,7 @@ static int msm_pmem_table_add(struct hlist_head *ptype,
 	if (!region)
 		return -ENOMEM;
 
-<<<<<<< HEAD
-=======
 	spin_lock_irqsave(pmem_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	INIT_HLIST_NODE(&region->list);
 
 	region->paddr = paddr;
@@ -338,39 +294,25 @@ static int msm_pmem_table_add(struct hlist_head *ptype,
 	memcpy(&region->info, info, sizeof(region->info));
 
 	hlist_add_head(&(region->list), ptype);
-<<<<<<< HEAD
-=======
 	spin_unlock_irqrestore(pmem_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	return 0;
 }
 
 /* return of 0 means failure */
 static uint8_t msm_pmem_region_lookup(struct hlist_head *ptype,
-<<<<<<< HEAD
-	int pmem_type, struct msm_pmem_region *reg, uint8_t maxcount)
-=======
 	int pmem_type, struct msm_pmem_region *reg, uint8_t maxcount,
 	spinlock_t *pmem_spinlock)
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 {
 	struct msm_pmem_region *region;
 	struct msm_pmem_region *regptr;
 	struct hlist_node *node, *n;
-<<<<<<< HEAD
-=======
 	unsigned long flags = 0;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	uint8_t rc = 0;
 
 	regptr = reg;
-<<<<<<< HEAD
-	mutex_lock(&hlist_mut);
-=======
 	spin_lock_irqsave(pmem_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	hlist_for_each_entry_safe(region, node, n, ptype, list) {
 		if (region->info.type == pmem_type && region->info.active) {
 			*regptr = *region;
@@ -380,41 +322,20 @@ static uint8_t msm_pmem_region_lookup(struct hlist_head *ptype,
 			regptr++;
 		}
 	}
-<<<<<<< HEAD
-	mutex_unlock(&hlist_mut);
-=======
 	spin_unlock_irqrestore(pmem_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	return rc;
 }
 
 static uint8_t msm_pmem_region_lookup_2(struct hlist_head *ptype,
 					int pmem_type,
 					struct msm_pmem_region *reg,
-<<<<<<< HEAD
-					uint8_t maxcount)
-=======
 					uint8_t maxcount,
 					spinlock_t *pmem_spinlock)
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 {
 	struct msm_pmem_region *region;
 	struct msm_pmem_region *regptr;
 	struct hlist_node *node, *n;
 	uint8_t rc = 0;
-<<<<<<< HEAD
-	regptr = reg;
-	mutex_lock(&hlist_mut);
-	hlist_for_each_entry_safe(region, node, n, ptype, list) {
-		printk(KERN_ERR "Mio: info.type=%d, pmem_type = %d,"
-						"info.active = %d\n",
-		region->info.type, pmem_type, region->info.active);
-
-		if (region->info.type == pmem_type && region->info.active) {
-			printk(KERN_ERR "info.type=%d, pmem_type = %d,"
-							"info.active = %d,\n",
-				region->info.type, pmem_type,
-=======
 	unsigned long flags = 0;
 	regptr = reg;
 	spin_lock_irqsave(pmem_spinlock, flags);
@@ -427,7 +348,6 @@ static uint8_t msm_pmem_region_lookup_2(struct hlist_head *ptype,
 			CDBG("%s:info.type=%d, pmem_type = %d,"
 							"info.active = %d,\n",
 				__func__, region->info.type, pmem_type,
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 				region->info.active);
 			*regptr = *region;
 			region->info.type = MSM_PMEM_VIDEO;
@@ -437,11 +357,7 @@ static uint8_t msm_pmem_region_lookup_2(struct hlist_head *ptype,
 			regptr++;
 		}
 	}
-<<<<<<< HEAD
-	mutex_unlock(&hlist_mut);
-=======
 	spin_unlock_irqrestore(pmem_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	return rc;
 }
 
@@ -453,13 +369,9 @@ static int msm_pmem_frame_ptov_lookup(struct msm_sync *sync,
 {
 	struct msm_pmem_region *region;
 	struct hlist_node *node, *n;
-<<<<<<< HEAD
-
-=======
 	unsigned long flags = 0;
 
 	spin_lock_irqsave(&sync->pmem_frame_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	hlist_for_each_entry_safe(region, node, n, &sync->pmem_frames, list) {
 		if (pyaddr == (region->paddr + region->info.y_off) &&
 				pcbcraddr == (region->paddr +
@@ -471,19 +383,13 @@ static int msm_pmem_frame_ptov_lookup(struct msm_sync *sync,
 			memcpy(pmem_info, &region->info, sizeof(*pmem_info));
 			if (clear_active)
 				region->info.active = 0;
-<<<<<<< HEAD
-=======
 			spin_unlock_irqrestore(&sync->pmem_frame_spinlock,
 				flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			return 0;
 		}
 	}
 
-<<<<<<< HEAD
-=======
 	spin_unlock_irqrestore(&sync->pmem_frame_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	return -EINVAL;
 }
 
@@ -492,31 +398,21 @@ static unsigned long msm_pmem_stats_ptov_lookup(struct msm_sync *sync,
 {
 	struct msm_pmem_region *region;
 	struct hlist_node *node, *n;
-<<<<<<< HEAD
-
-=======
 	unsigned long flags = 0;
 
 	spin_lock_irqsave(&sync->pmem_stats_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	hlist_for_each_entry_safe(region, node, n, &sync->pmem_stats, list) {
 		if (addr == region->paddr && region->info.active) {
 			/* offset since we could pass vaddr inside a
 			 * registered pmem buffer */
 			*fd = region->info.fd;
 			region->info.active = 0;
-<<<<<<< HEAD
-			return (unsigned long)(region->info.vaddr);
-		}
-	}
-=======
 			spin_unlock_irqrestore(&sync->pmem_stats_spinlock,
 				flags);
 			return (unsigned long)(region->info.vaddr);
 		}
 	}
 	spin_unlock_irqrestore(&sync->pmem_stats_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	return 0;
 }
@@ -527,13 +423,9 @@ static unsigned long msm_pmem_frame_vtop_lookup(struct msm_sync *sync,
 {
 	struct msm_pmem_region *region;
 	struct hlist_node *node, *n;
-<<<<<<< HEAD
-
-=======
 	unsigned long flags = 0;
 
 	spin_lock_irqsave(&sync->pmem_frame_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	hlist_for_each_entry_safe(region,
 		node, n, &sync->pmem_frames, list) {
 		if (((unsigned long)(region->info.vaddr) == buffer) &&
@@ -542,18 +434,12 @@ static unsigned long msm_pmem_frame_vtop_lookup(struct msm_sync *sync,
 				(region->info.fd == fd) &&
 				(region->info.active == 0)) {
 			region->info.active = 1;
-<<<<<<< HEAD
-			return region->paddr;
-		}
-	}
-=======
 			spin_unlock_irqrestore(&sync->pmem_frame_spinlock,
 				flags);
 			return region->paddr;
 		}
 	}
 	spin_unlock_irqrestore(&sync->pmem_frame_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	return 0;
 }
@@ -565,30 +451,20 @@ static unsigned long msm_pmem_stats_vtop_lookup(
 {
 	struct msm_pmem_region *region;
 	struct hlist_node *node, *n;
-<<<<<<< HEAD
-
-=======
 	unsigned long flags = 0;
 
 	spin_lock_irqsave(&sync->pmem_stats_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	hlist_for_each_entry_safe(region, node, n, &sync->pmem_stats, list) {
 		if (((unsigned long)(region->info.vaddr) == buffer) &&
 				(region->info.fd == fd) &&
 				region->info.active == 0) {
 			region->info.active = 1;
-<<<<<<< HEAD
-			return region->paddr;
-		}
-	}
-=======
 			spin_unlock_irqrestore(&sync->pmem_stats_spinlock,
 				flags);
 			return region->paddr;
 		}
 	}
 	spin_unlock_irqrestore(&sync->pmem_stats_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	return 0;
 }
@@ -599,10 +475,7 @@ static int __msm_pmem_table_del(struct msm_sync *sync,
 	int rc = 0;
 	struct msm_pmem_region *region;
 	struct hlist_node *node, *n;
-<<<<<<< HEAD
-=======
 	unsigned long flags = 0;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	switch (pinfo->type) {
 	case MSM_PMEM_VIDEO:
@@ -611,10 +484,7 @@ static int __msm_pmem_table_del(struct msm_sync *sync,
 	case MSM_PMEM_MAINIMG:
 	case MSM_PMEM_RAW_MAINIMG:
 	case MSM_PMEM_VIDEO_VPE:
-<<<<<<< HEAD
-=======
 		spin_lock_irqsave(&sync->pmem_frame_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		hlist_for_each_entry_safe(region, node, n,
 			&sync->pmem_frames, list) {
 
@@ -626,18 +496,12 @@ static int __msm_pmem_table_del(struct msm_sync *sync,
 				kfree(region);
 			}
 		}
-<<<<<<< HEAD
-=======
 		spin_unlock_irqrestore(&sync->pmem_frame_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		break;
 
 	case MSM_PMEM_AEC_AWB:
 	case MSM_PMEM_AF:
-<<<<<<< HEAD
-=======
 		spin_lock_irqsave(&sync->pmem_stats_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		hlist_for_each_entry_safe(region, node, n,
 			&sync->pmem_stats, list) {
 
@@ -649,10 +513,7 @@ static int __msm_pmem_table_del(struct msm_sync *sync,
 				kfree(region);
 			}
 		}
-<<<<<<< HEAD
-=======
 		spin_unlock_irqrestore(&sync->pmem_stats_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		break;
 
 	default:
@@ -692,12 +553,6 @@ static int __msm_get_frame(struct msm_sync *sync,
 		return -EAGAIN;
 	}
 
-<<<<<<< HEAD
-	vdata = (struct msm_vfe_resp *)(qcmd->command);
-	pphy = &vdata->phy;
-
-
-=======
 	if ((!qcmd->command) && (qcmd->error_code & MSM_CAMERA_ERR_MASK)) {
 		frame->error_code = qcmd->error_code;
 		CDBG("%s: fake frame with camera error code = %d\n", __func__,
@@ -708,7 +563,6 @@ static int __msm_get_frame(struct msm_sync *sync,
 	vdata = (struct msm_vfe_resp *)(qcmd->command);
 	pphy = &vdata->phy;
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	rc = msm_pmem_frame_ptov_lookup(sync,
 			pphy->y_phy,
 			pphy->cbcr_phy,
@@ -844,25 +698,18 @@ static struct msm_queue_cmd *__msm_control(struct msm_sync *sync,
 	rc = wait_event_interruptible_timeout(
 			queue->wait,
 			!list_empty_careful(&queue->list),
-<<<<<<< HEAD
-			timeout);
-=======
 #if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
 			msecs_to_jiffies(timeout));
 #else
 			timeout);
 #endif
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	CDBG("Waiting over for config status \n");
 	if (list_empty_careful(&queue->list)) {
 		if (!rc)
 			rc = -ETIMEDOUT;
 		if (rc < 0) {
 			pr_err("%s: wait_event error %d\n", __func__, rc);
-<<<<<<< HEAD
-=======
 			msm_delete_entry(&sync->event_q, list_config, qcmd);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			return ERR_PTR(rc);
 		}
 	}
@@ -899,11 +746,7 @@ static struct msm_queue_cmd *__msm_control_nb(struct msm_sync *sync,
 	udata->value = udata + 1;
 	memcpy(udata->value, udata_to_copy->value, udata_to_copy->length);
 
-<<<<<<< HEAD
-	qcmd->on_heap = 1;
-=======
 	atomic_set(&qcmd->on_heap, 1);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	/* qcmd_resp will be set to NULL */
 	return __msm_control(sync, NULL, qcmd, 0);
@@ -931,13 +774,7 @@ static int msm_control(struct msm_control_device *ctrl_pmsm,
 
 	uptr = udata.value;
 	udata.value = data;
-<<<<<<< HEAD
-	if (udata.type == CAMERA_STOP_SNAPSHOT)
-		sync->get_pic_abort = 1;
-	qcmd.on_heap = 0;
-=======
 	atomic_set(&(qcmd.on_heap), 0);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	qcmd.type = MSM_CAM_Q_CTRL;
 	qcmd.command = &udata;
 
@@ -964,15 +801,11 @@ static int msm_control(struct msm_control_device *ctrl_pmsm,
 
 	qcmd_resp = __msm_control(sync,
 				  &ctrl_pmsm->ctrl_q,
-<<<<<<< HEAD
-				  &qcmd, MAX_SCHEDULE_TIMEOUT);
-=======
 #if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
 				  &qcmd, udata.timeout_ms);
 #else
 				  &qcmd, MAX_SCHEDULE_TIMEOUT);
 #endif
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	if (!qcmd_resp || IS_ERR(qcmd_resp)) {
 		/* Do not free qcmd_resp here.  If the config thread read it,
@@ -1057,8 +890,6 @@ static int msm_divert_frame(struct msm_sync *sync,
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 static int msm_divert_snapshot(struct msm_sync *sync,
 		struct msm_vfe_resp *data,
@@ -1119,7 +950,6 @@ end:
 }
 #endif /* CONFIG_MACH_SEMC_ZEUS */
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 static int msm_get_stats(struct msm_sync *sync, void __user *arg)
 {
 	int timeout;
@@ -1214,15 +1044,6 @@ static int msm_get_stats(struct msm_sync *sync, void __user *arg)
 				goto failure;
 			}
 		} else {
-<<<<<<< HEAD
-			if ((sync->pp_mask & PP_PREV) &&
-				(data->type == VFE_MSG_OUTPUT_P))
-					rc = msm_divert_frame(sync, data, &se);
-			else if (sync->pp_mask & PP_SNAP)
-				if (data->type == VFE_MSG_OUTPUT_S ||
-					data->type == VFE_MSG_OUTPUT_T)
-					rc = msm_divert_frame(sync, data, &se);
-=======
 			if ((sync->pp_frame_avail == 1) &&
 				(sync->pp_mask & PP_PREV) &&
 				(data->type == VFE_MSG_OUTPUT_P)) {
@@ -1253,7 +1074,6 @@ static int msm_get_stats(struct msm_sync *sync, void __user *arg)
 					data->type == VFE_MSG_OUTPUT_T)
 					rc = msm_divert_frame(sync, data, &se);
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		}
 		break;
 
@@ -1306,10 +1126,6 @@ static int msm_get_stats(struct msm_sync *sync, void __user *arg)
 		rc = -EFAULT;
 		goto failure;
 	} /* switch qcmd->type */
-<<<<<<< HEAD
-
-=======
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	if (copy_to_user((void *)arg, &se, sizeof(se))) {
 		ERR_COPY_TO_USER();
 		rc = -EFAULT;
@@ -1335,11 +1151,7 @@ static int msm_ctrl_cmd_done(struct msm_control_device *ctrl_pmsm,
 		return -EFAULT;
 	}
 
-<<<<<<< HEAD
-	qcmd->on_heap = 0;
-=======
 	atomic_set(&qcmd->on_heap, 0);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	qcmd->command = command;
 	uptr = command->value;
 
@@ -1408,14 +1220,6 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 	case CMD_STATS_ENABLE:
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats,
-<<<<<<< HEAD
-					MSM_PMEM_AEC_AWB, &region[0],
-					NUM_STAT_OUTPUT_BUFFERS);
-		axi_data.bufnum2 =
-			msm_pmem_region_lookup(&sync->pmem_stats,
-					MSM_PMEM_AF, &region[axi_data.bufnum1],
-					NUM_STAT_OUTPUT_BUFFERS);
-=======
 				MSM_PMEM_AEC_AWB, &region[0],
 				NUM_STAT_OUTPUT_BUFFERS,
 				&sync->pmem_stats_spinlock);
@@ -1424,7 +1228,6 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 				MSM_PMEM_AF, &region[axi_data.bufnum1],
 				NUM_STAT_OUTPUT_BUFFERS,
 				&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1 || !axi_data.bufnum2) {
 			pr_err("%s: pmem region lookup error\n", __func__);
 			return -EINVAL;
@@ -1434,14 +1237,9 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 	case CMD_STATS_AF_ENABLE:
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats,
-<<<<<<< HEAD
-					MSM_PMEM_AF, &region[0],
-					NUM_STAT_OUTPUT_BUFFERS);
-=======
 				MSM_PMEM_AF, &region[0],
 				NUM_STAT_OUTPUT_BUFFERS,
 				&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1452,14 +1250,9 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 	case CMD_STATS_AEC_AWB_ENABLE:
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats,
-<<<<<<< HEAD
-			MSM_PMEM_AEC_AWB, &region[0],
-			NUM_STAT_OUTPUT_BUFFERS);
-=======
 				MSM_PMEM_AEC_AWB, &region[0],
 				NUM_STAT_OUTPUT_BUFFERS,
 				&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1471,12 +1264,8 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_AEC, &region[0],
-<<<<<<< HEAD
-			NUM_STAT_OUTPUT_BUFFERS);
-=======
 			NUM_STAT_OUTPUT_BUFFERS,
 			&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1488,12 +1277,8 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_AWB, &region[0],
-<<<<<<< HEAD
-			NUM_STAT_OUTPUT_BUFFERS);
-=======
 			NUM_STAT_OUTPUT_BUFFERS,
 			&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1507,12 +1292,8 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_IHIST, &region[0],
-<<<<<<< HEAD
-			NUM_STAT_OUTPUT_BUFFERS);
-=======
 			NUM_STAT_OUTPUT_BUFFERS,
 			&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1525,12 +1306,8 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_RS, &region[0],
-<<<<<<< HEAD
-			NUM_STAT_OUTPUT_BUFFERS);
-=======
 			NUM_STAT_OUTPUT_BUFFERS,
 			&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1543,12 +1320,8 @@ static int msm_config_vfe(struct msm_sync *sync, void __user *arg)
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats,
 			MSM_PMEM_CS, &region[0],
-<<<<<<< HEAD
-			NUM_STAT_OUTPUT_BUFFERS);
-=======
 			NUM_STAT_OUTPUT_BUFFERS,
 			&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1587,11 +1360,7 @@ static int msm_vpe_frame_cfg(struct msm_sync *sync,
 		pmem_type = MSM_PMEM_VIDEO_VPE;
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup_2(&sync->pmem_frames, pmem_type,
-<<<<<<< HEAD
-								&region[0], 8);
-=======
 				&region[0], 8, &sync->pmem_frame_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		CDBG("axi_data.bufnum1 = %d\n", axi_data.bufnum1);
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
@@ -1631,11 +1400,7 @@ static int msm_frame_axi_cfg(struct msm_sync *sync,
 		pmem_type = MSM_PMEM_PREVIEW;
 		axi_data.bufnum2 =
 			msm_pmem_region_lookup(&sync->pmem_frames, pmem_type,
-<<<<<<< HEAD
-				&region[0], 8);
-=======
 				&region[0], 8, &sync->pmem_frame_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum2) {
 			pr_err("%s %d: pmem region lookup error (empty %d)\n",
 				__func__, __LINE__,
@@ -1648,11 +1413,7 @@ static int msm_frame_axi_cfg(struct msm_sync *sync,
 		pmem_type = MSM_PMEM_PREVIEW;
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_frames, pmem_type,
-<<<<<<< HEAD
-				&region[0], 8);
-=======
 				&region[0], 8, &sync->pmem_frame_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1663,12 +1424,8 @@ static int msm_frame_axi_cfg(struct msm_sync *sync,
 		axi_data.bufnum2 =
 			msm_pmem_region_lookup(&sync->pmem_frames, pmem_type,
 				&region[axi_data.bufnum1],
-<<<<<<< HEAD
-				(8-(axi_data.bufnum1)));
-=======
 				(8-(axi_data.bufnum1)),
 				&sync->pmem_frame_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum2) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1681,11 +1438,7 @@ static int msm_frame_axi_cfg(struct msm_sync *sync,
 		pmem_type = MSM_PMEM_THUMBNAIL;
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_frames, pmem_type,
-<<<<<<< HEAD
-				&region[0], 8);
-=======
 				&region[0], 8, &sync->pmem_frame_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1696,12 +1449,8 @@ static int msm_frame_axi_cfg(struct msm_sync *sync,
 		axi_data.bufnum2 =
 			msm_pmem_region_lookup(&sync->pmem_frames, pmem_type,
 				&region[axi_data.bufnum1],
-<<<<<<< HEAD
-				(8-(axi_data.bufnum1)));
-=======
 				(8-(axi_data.bufnum1)),
 				 &sync->pmem_frame_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum2) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -1713,20 +1462,13 @@ static int msm_frame_axi_cfg(struct msm_sync *sync,
 		pmem_type = MSM_PMEM_RAW_MAINIMG;
 		axi_data.bufnum2 =
 			msm_pmem_region_lookup(&sync->pmem_frames, pmem_type,
-<<<<<<< HEAD
-				&region[0], 8);
-=======
 				&region[0], 8, &sync->pmem_frame_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum2) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
 			return -EINVAL;
 		}
 		break;
-<<<<<<< HEAD
-
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 	case CMD_AXI_CFG_CONT_RAW_RGB:
 		pmem_type = MSM_PMEM_PREVIEW;
@@ -1741,7 +1483,6 @@ static int msm_frame_axi_cfg(struct msm_sync *sync,
 		}
 		break;
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	case CMD_GENERAL:
 		data = NULL;
 		break;
@@ -1849,12 +1590,8 @@ static int __msm_register_pmem(struct msm_sync *sync,
 	case MSM_PMEM_MAINIMG:
 	case MSM_PMEM_RAW_MAINIMG:
 	case MSM_PMEM_VIDEO_VPE:
-<<<<<<< HEAD
-		rc = msm_pmem_table_add(&sync->pmem_frames, pinfo);
-=======
 		rc = msm_pmem_table_add(&sync->pmem_frames, pinfo,
 			&sync->pmem_frame_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		break;
 
 	case MSM_PMEM_AEC_AWB:
@@ -1866,12 +1603,8 @@ static int __msm_register_pmem(struct msm_sync *sync,
 	case MSM_PMEM_IHIST:
 	case MSM_PMEM_SKIN:
 
-<<<<<<< HEAD
-		rc = msm_pmem_table_add(&sync->pmem_stats, pinfo);
-=======
 		rc = msm_pmem_table_add(&sync->pmem_stats, pinfo,
 			 &sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		break;
 
 	default:
@@ -1925,12 +1658,8 @@ static int msm_stats_axi_cfg(struct msm_sync *sync,
 	if (cfgcmd->cmd_type != CMD_GENERAL) {
 		axi_data.bufnum1 =
 			msm_pmem_region_lookup(&sync->pmem_stats, pmem_type,
-<<<<<<< HEAD
-				&region[0], NUM_STAT_OUTPUT_BUFFERS);
-=======
 				&region[0], NUM_STAT_OUTPUT_BUFFERS,
 				&sync->pmem_stats_spinlock);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axi_data.bufnum1) {
 			pr_err("%s %d: pmem region lookup error\n",
 				__func__, __LINE__);
@@ -2019,12 +1748,9 @@ static int msm_axi_config(struct msm_sync *sync, void __user *arg)
 	case CMD_AXI_CFG_PREVIEW:
 	case CMD_AXI_CFG_SNAP:
 	case CMD_RAW_PICT_AXI_CFG:
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 	case CMD_AXI_CFG_CONT_RAW_RGB:
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		return msm_frame_axi_cfg(sync, &cfgcmd);
 	case CMD_AXI_CFG_VPE:
 		return msm_vpe_frame_cfg(sync, (void *)&cfgcmd);
@@ -2047,34 +1773,22 @@ static int __msm_get_pic(struct msm_sync *sync, struct msm_ctrl_cmd *ctrl)
 {
 	int rc = 0;
 	int tm;
-<<<<<<< HEAD
-=======
 	unsigned long flags = 0;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	struct msm_queue_cmd *qcmd = NULL;
 
 	tm = (int)ctrl->timeout_ms;
 
-<<<<<<< HEAD
-=======
 	spin_lock_irqsave(&sync->abort_pict_lock, flags);
 	sync->get_pic_abort = 0;
 	spin_unlock_irqrestore(&sync->abort_pict_lock, flags);
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	rc = wait_event_interruptible_timeout(
 			sync->pict_q.wait,
 			!list_empty_careful(
 				&sync->pict_q.list) || sync->get_pic_abort,
 			msecs_to_jiffies(tm));
 
-<<<<<<< HEAD
-	if (sync->get_pic_abort == 1) {
-		sync->get_pic_abort = 0;
-		return -ENODATA;
-	}
-=======
 	spin_lock_irqsave(&sync->abort_pict_lock, flags);
 	if (sync->get_pic_abort) {
 		sync->get_pic_abort = 0;
@@ -2083,7 +1797,6 @@ static int __msm_get_pic(struct msm_sync *sync, struct msm_ctrl_cmd *ctrl)
 	}
 	spin_unlock_irqrestore(&sync->abort_pict_lock, flags);
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	if (list_empty_careful(&sync->pict_q.list)) {
 		if (rc == 0)
 			return -ETIMEDOUT;
@@ -2185,8 +1898,6 @@ static int msm_set_crop(struct msm_sync *sync, void __user *arg)
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
 static int msm_error_config(struct msm_sync *sync, void __user *arg)
 {
 	struct msm_queue_cmd *qcmd =
@@ -2208,7 +1919,6 @@ static int msm_error_config(struct msm_sync *sync, void __user *arg)
 	return 0;
 }
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 static int msm_pp_grab(struct msm_sync *sync, void __user *arg)
 {
 	uint32_t enable;
@@ -2239,10 +1949,7 @@ static int msm_pp_grab(struct msm_sync *sync, void __user *arg)
 static int msm_pp_release(struct msm_sync *sync, void __user *arg)
 {
 	uint32_t mask;
-<<<<<<< HEAD
-=======
 	unsigned long flags;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	if (copy_from_user(&mask, arg, sizeof(uint32_t))) {
 		ERR_COPY_FROM_USER();
 		return -EFAULT;
@@ -2257,22 +1964,6 @@ static int msm_pp_release(struct msm_sync *sync, void __user *arg)
 	if (sync->pp_mask & PP_PREV) {
 
 		if (mask & PP_PREV) {
-<<<<<<< HEAD
-			mutex_lock(&pp_prev_lock);
-			if (!sync->pp_prev) {
-				pr_err("%s: no preview frame to deliver!\n",
-					__func__);
-				mutex_unlock(&pp_prev_lock);
-				return -EINVAL;
-			}
-			pr_info("%s: delivering pp_prev\n", __func__);
-
-			msm_enqueue(&sync->frame_q, &sync->pp_prev->list_frame);
-			sync->pp_prev = NULL;
-			mutex_unlock(&pp_prev_lock);
-		} else if (!(mask & PP_PREV)) {
-			sync->pp_mask &= ~PP_PREV;
-=======
 			spin_lock_irqsave(&pp_prev_spinlock, flags);
 			if (!sync->pp_prev) {
 				pr_err("%s: no preview frame to deliver!\n",
@@ -2289,25 +1980,12 @@ static int msm_pp_release(struct msm_sync *sync, void __user *arg)
 		} else if (!(mask & PP_PREV)) {
 			sync->pp_mask &= ~PP_PREV;
 			CDBG("%s: pp_prev is done.\n", __func__);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		}
 		goto done;
 	}
 
 	if (((mask & PP_SNAP) && (sync->pp_mask & PP_SNAP)) ||
 		((mask & PP_RAW_SNAP) && (sync->pp_mask & PP_RAW_SNAP))) {
-<<<<<<< HEAD
-		mutex_lock(&pp_snap_lock);
-		if (!sync->pp_snap) {
-			pr_err("%s: no snapshot to deliver!\n", __func__);
-			mutex_unlock(&pp_snap_lock);
-			return -EINVAL;
-		}
-		pr_info("%s: delivering pp_snap\n", __func__);
-		msm_enqueue(&sync->pict_q, &sync->pp_snap->list_pict);
-		sync->pp_snap = NULL;
-		mutex_unlock(&pp_snap_lock);
-=======
 		spin_lock_irqsave(&pp_snap_spinlock, flags);
 		if (!sync->pp_snap) {
 			pr_err("%s: no snapshot to deliver!\n", __func__);
@@ -2318,7 +1996,6 @@ static int msm_pp_release(struct msm_sync *sync, void __user *arg)
 		msm_enqueue(&sync->pict_q, &sync->pp_snap->list_pict);
 		sync->pp_snap = NULL;
 		spin_unlock_irqrestore(&pp_snap_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		sync->pp_mask &=
 			(mask & PP_SNAP) ? ~PP_SNAP : ~PP_RAW_SNAP;
 	}
@@ -2461,8 +2138,6 @@ static long msm_ioctl_config(struct file *filep, unsigned int cmd,
 		break;
 	}
 
-<<<<<<< HEAD
-=======
 	case MSM_CAM_IOCTL_ERROR_CONFIG:
 		rc = msm_error_config(pmsm->sync, argp);
 		break;
@@ -2477,7 +2152,6 @@ static long msm_ioctl_config(struct file *filep, unsigned int cmd,
 		break;
 	}
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	default:
 		rc = msm_ioctl_common(pmsm, cmd, argp);
 		break;
@@ -2568,17 +2242,6 @@ static int __msm_release(struct msm_sync *sync)
 	if (sync->opencnt)
 		sync->opencnt--;
 	if (!sync->opencnt) {
-<<<<<<< HEAD
-		/*sensor release*/
-		sync->sctrl.s_release();
-		/* need to clean up system resource */
-		if (sync->vfefn.vfe_release)
-			sync->vfefn.vfe_release(sync->pdev);
-		kfree(sync->cropinfo);
-		sync->cropinfo = NULL;
-		sync->croplen = 0;
-
-=======
 		/* need to clean up system resource */
 		if (sync->vfefn.vfe_release)
 			sync->vfefn.vfe_release(sync->pdev);
@@ -2588,17 +2251,12 @@ static int __msm_release(struct msm_sync *sync)
 		kfree(sync->cropinfo);
 		sync->cropinfo = NULL;
 		sync->croplen = 0;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		hlist_for_each_entry_safe(region, hnode, n,
 				&sync->pmem_frames, list) {
 			hlist_del(hnode);
 			put_pmem_file(region->file);
 			kfree(region);
 		}
-<<<<<<< HEAD
-
-=======
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		hlist_for_each_entry_safe(region, hnode, n,
 				&sync->pmem_stats, list) {
 			hlist_del(hnode);
@@ -2607,12 +2265,9 @@ static int __msm_release(struct msm_sync *sync)
 		}
 		msm_queue_drain(&sync->pict_q, list_pict);
 
-<<<<<<< HEAD
-=======
 
 		wake_unlock(&sync->suspend_lock);
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		wake_unlock(&sync->wake_lock);
 		sync->apps_id = NULL;
 		CDBG("%s: completed\n", __func__);
@@ -2715,11 +2370,7 @@ static void *msm_vfe_sync_alloc(int size,
 	struct msm_queue_cmd *qcmd =
 		kmalloc(sizeof(struct msm_queue_cmd) + size, gfp);
 	if (qcmd) {
-<<<<<<< HEAD
-		qcmd->on_heap = 1;
-=======
 		atomic_set(&qcmd->on_heap, 1);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		return qcmd + 1;
 	}
 	return NULL;
@@ -2732,11 +2383,7 @@ static void *msm_vpe_sync_alloc(int size,
 	struct msm_queue_cmd *qcmd =
 		kmalloc(sizeof(struct msm_queue_cmd) + size, gfp);
 	if (qcmd) {
-<<<<<<< HEAD
-		qcmd->on_heap = 1;
-=======
 		atomic_set(&qcmd->on_heap, 1);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		return qcmd + 1;
 	}
 	return NULL;
@@ -2748,11 +2395,7 @@ static void msm_vfe_sync_free(void *ptr)
 		struct msm_queue_cmd *qcmd =
 			(struct msm_queue_cmd *)ptr;
 		qcmd--;
-<<<<<<< HEAD
-		if (qcmd->on_heap)
-=======
 		if (atomic_read(&qcmd->on_heap))
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			kfree(qcmd);
 	}
 }
@@ -2763,11 +2406,7 @@ static void msm_vpe_sync_free(void *ptr)
 		struct msm_queue_cmd *qcmd =
 			(struct msm_queue_cmd *)ptr;
 		qcmd--;
-<<<<<<< HEAD
-		if (qcmd->on_heap)
-=======
 		if (atomic_read(&qcmd->on_heap))
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			kfree(qcmd);
 	}
 }
@@ -2782,10 +2421,7 @@ static void msm_vfe_sync(struct msm_vfe_resp *vdata,
 {
 	struct msm_queue_cmd *qcmd = NULL;
 	struct msm_sync *sync = (struct msm_sync *)syncdata;
-<<<<<<< HEAD
-=======
 	unsigned long flags;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	if (!sync) {
 		pr_err("%s: no context in dsp callback.\n", __func__);
@@ -2810,21 +2446,6 @@ static void msm_vfe_sync(struct msm_vfe_resp *vdata,
 				__func__,
 				vdata->phy.y_phy,
 				vdata->phy.cbcr_phy);
-<<<<<<< HEAD
-			mutex_lock(&pp_prev_lock);
-			if (sync->pp_prev)
-				pr_warning("%s: overwriting pp_prev!\n",
-					__func__);
-			pr_info("%s: sending preview to config\n", __func__);
-			sync->pp_prev = qcmd;
-			mutex_unlock(&pp_prev_lock);
-			break;
-		}
-		CDBG("%s: msm_enqueue frame_q\n", __func__);
-		msm_enqueue(&sync->frame_q, &qcmd->list_frame);
-		if (qcmd->on_heap)
-			qcmd->on_heap++;
-=======
 			spin_lock_irqsave(&pp_prev_spinlock, flags);
 			if (sync->pp_prev)
 				CDBG("%s: overwriting pp_prev!\n",
@@ -2841,21 +2462,10 @@ static void msm_vfe_sync(struct msm_vfe_resp *vdata,
 		if (atomic_read(&qcmd->on_heap))
 			atomic_add(1, &qcmd->on_heap);
 		msm_enqueue(&sync->frame_q, &qcmd->list_frame);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		break;
 
 	case VFE_MSG_OUTPUT_T:
 		if (sync->pp_mask & PP_SNAP) {
-<<<<<<< HEAD
-			mutex_lock(&pp_thumb_lock);
-			if (sync->pp_thumb)
-				pr_warning("%s: overwriting pp_thumb!\n",
-					__func__);
-			pr_info("%s: pp sending thumbnail to config\n",
-				__func__);
-			sync->pp_thumb = qcmd;
-			mutex_unlock(&pp_thumb_lock);
-=======
 			spin_lock_irqsave(&pp_thumb_spinlock, flags);
 			if (sync->pp_thumb)
 				pr_warning("%s: overwriting pp_thumb!\n",
@@ -2864,34 +2474,18 @@ static void msm_vfe_sync(struct msm_vfe_resp *vdata,
 				__func__);
 			sync->pp_thumb = qcmd;
 			spin_unlock_irqrestore(&pp_thumb_spinlock, flags);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			break;
 		} else {
 		/* this is for normal snapshot case. right now we only have
 		single shot. still keeping the old way. therefore no need
 		to send anything to user.*/
-<<<<<<< HEAD
-			if (!--qcmd->on_heap)
-				kfree(qcmd);
-=======
 			if (atomic_read(&qcmd->on_heap))
 				free_qcmd(qcmd);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			return;
 		}
 
 	case VFE_MSG_OUTPUT_S:
 		if (sync->pp_mask & PP_SNAP) {
-<<<<<<< HEAD
-			mutex_lock(&pp_snap_lock);
-			if (sync->pp_snap)
-				pr_warning("%s: overwriting pp_snap!\n",
-					__func__);
-			pr_info("%s: pp sending main image to config\n",
-				__func__);
-			sync->pp_snap = qcmd;
-			mutex_unlock(&pp_snap_lock);
-=======
 			spin_lock_irqsave(&pp_snap_spinlock, flags);
 			if (sync->pp_snap)
 				pr_warning("%s: overwriting pp_snap!\n",
@@ -2902,19 +2496,13 @@ static void msm_vfe_sync(struct msm_vfe_resp *vdata,
 			spin_unlock_irqrestore(&pp_snap_spinlock, flags);
 			if (atomic_read(&qcmd->on_heap))
 				atomic_add(1, &qcmd->on_heap);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			break;
 		} else {
 		/* this is for normal snapshot case. right now we only have
 		  single shot. still keeping the old way. therefore no need
 		  to send anything to user.*/
-<<<<<<< HEAD
-			if (!--qcmd->on_heap)
-				kfree(qcmd);
-=======
 			if (atomic_read(&qcmd->on_heap))
 				free_qcmd(qcmd);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			return;
 		}
 
@@ -2938,12 +2526,6 @@ static void msm_vfe_sync(struct msm_vfe_resp *vdata,
 					&qcmd->list_vpe_frame);
 				return;
 			} else if (sync->vpefn.vpe_cfg_update(sync->cropinfo)) {
-<<<<<<< HEAD
-				if (qcmd->on_heap)
-					qcmd->on_heap++;
-
-=======
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 				CDBG("%s: msm_enqueue video frame to vpe time "
 					"= %ld\n", __func__, qcmd->ts.tv_nsec);
 
@@ -2965,45 +2547,18 @@ static void msm_vfe_sync(struct msm_vfe_resp *vdata,
 				}
 				msm_enqueue(&sync->frame_q,
 					&qcmd->list_frame);
-<<<<<<< HEAD
-				if (qcmd->on_heap)
-					qcmd->on_heap++;
-				break;
-=======
 				return;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			}
 		} else {
 			CDBG("%s: msm_enqueue video frame_q\n",	__func__);
 			msm_enqueue(&sync->frame_q, &qcmd->list_frame);
-<<<<<<< HEAD
-
-			if (qcmd->on_heap)
-				qcmd->on_heap++;
-			break;
-=======
 			return;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		}
 
 	case VFE_MSG_SNAPSHOT:
 		if (sync->pp_mask & (PP_SNAP | PP_RAW_SNAP)) {
 			CDBG("%s: PP_SNAP in progress: pp_mask %x\n",
 				__func__, sync->pp_mask);
-<<<<<<< HEAD
-			mutex_lock(&pp_snap_lock);
-			if (sync->pp_snap)
-				pr_warning("%s: overwriting pp_snap!\n",
-					__func__);
-			pr_info("%s: sending snapshot to config\n",
-				__func__);
-			sync->pp_snap = qcmd;
-			mutex_unlock(&pp_snap_lock);
-		} else {
-			msm_enqueue(&sync->pict_q, &qcmd->list_pict);
-			if (qcmd->on_heap)
-				qcmd->on_heap++;
-=======
 			spin_lock_irqsave(&pp_snap_spinlock, flags);
 			if (sync->pp_snap)
 				pr_warning("%s: overwriting pp_snap!\n",
@@ -3027,7 +2582,6 @@ static void msm_vfe_sync(struct msm_vfe_resp *vdata,
 		} else {
 		    return;
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		}
 		break;
 
@@ -3089,16 +2643,11 @@ static void msm_vpe_sync(struct msm_vpe_resp *vdata,
 	qcmd->command = vdata;
 	qcmd->ts = *((struct timespec *)ts);
 
-<<<<<<< HEAD
-	if (qtype != MSM_CAM_Q_VPE_MSG)
-		goto vpe_for_config;
-=======
 	if (qtype != MSM_CAM_Q_VPE_MSG) {
 		pr_err("%s: Invalid qcmd type = %d.\n", __func__, qcmd->type);
 		free_qcmd(qcmd);
 		return;
 	}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	CDBG("%s: vdata->type %d\n", __func__, vdata->type);
 	switch (vdata->type) {
@@ -3111,21 +2660,11 @@ static void msm_vpe_sync(struct msm_vpe_resp *vdata,
 			sync->liveshot_enabled = false;
 		}
 		msm_enqueue(&sync->frame_q, &qcmd->list_frame);
-<<<<<<< HEAD
-		if (qcmd->on_heap)
-			qcmd->on_heap++;
-		break;
-=======
 		return;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	default:
 		CDBG("%s: qtype %d not handled\n", __func__, vdata->type);
 		/* fall through, send to config. */
 	}
-<<<<<<< HEAD
-vpe_for_config:
-=======
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	CDBG("%s: msm_enqueue event_q\n", __func__);
 	msm_enqueue(&sync->event_q, &qcmd->list_config);
 }
@@ -3161,29 +2700,18 @@ static int __msm_open(struct msm_sync *sync, const char *const apps_id)
 	sync->apps_id = apps_id;
 
 	if (!sync->opencnt) {
-<<<<<<< HEAD
-=======
 
 		wake_lock(&sync->suspend_lock);
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		wake_lock(&sync->wake_lock);
 
 		msm_camvfe_fn_init(&sync->vfefn, sync);
 		if (sync->vfefn.vfe_init) {
-<<<<<<< HEAD
-			sync->get_pic_abort = 0;
-			rc = sync->vfefn.vfe_init(&msm_vfe_s,
-				sync->pdev);
-			if (rc < 0) {
-				pr_err("%s: vfe_init failed at %d\n",
-=======
 			sync->pp_frame_avail = 0;
 			sync->get_pic_abort = 0;
 			rc = msm_camio_sensor_clk_on(sync->pdev);
 			if (rc < 0) {
 				pr_err("%s: setting sensor clocks failed: %d\n",
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 					__func__, rc);
 				goto msm_open_done;
 			}
@@ -3193,8 +2721,6 @@ static int __msm_open(struct msm_sync *sync, const char *const apps_id)
 					__func__, rc);
 				goto msm_open_done;
 			}
-<<<<<<< HEAD
-=======
 			rc = sync->vfefn.vfe_init(&msm_vfe_s,
 				sync->pdev);
 			if (rc < 0) {
@@ -3202,7 +2728,6 @@ static int __msm_open(struct msm_sync *sync, const char *const apps_id)
 					__func__, rc);
 				goto msm_open_done;
 			}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		} else {
 			pr_err("%s: no sensor init func\n", __func__);
 			rc = -ENODEV;
@@ -3210,15 +2735,9 @@ static int __msm_open(struct msm_sync *sync, const char *const apps_id)
 		}
 		msm_camvpe_fn_init(&sync->vpefn, sync);
 
-<<<<<<< HEAD
-		if (rc >= 0) {
-			INIT_HLIST_HEAD(&sync->pmem_frames);
-			INIT_HLIST_HEAD(&sync->pmem_stats);
-=======
 		spin_lock_init(&sync->abort_pict_lock);
 		if (rc >= 0) {
 			msm_region_init(sync);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			if (sync->vpefn.vpe_reg)
 				sync->vpefn.vpe_reg(&msm_vpe_s);
 			sync->unblock_poll_frame = 0;
@@ -3232,11 +2751,7 @@ msm_open_done:
 }
 
 static int msm_open_common(struct inode *inode, struct file *filep,
-<<<<<<< HEAD
-			   int once)
-=======
 			int once)
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 {
 	int rc;
 	struct msm_cam_device *pmsm =
@@ -3260,13 +2775,7 @@ static int msm_open_common(struct inode *inode, struct file *filep,
 	rc = __msm_open(pmsm->sync, MSM_APPS_ID_PROP);
 	if (rc < 0)
 		return rc;
-<<<<<<< HEAD
-
 	filep->private_data = pmsm;
-
-=======
-	filep->private_data = pmsm;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	CDBG("%s: rc %d\n", __func__, rc);
 	return rc;
 }
@@ -3286,16 +2795,10 @@ static int msm_open_control(struct inode *inode, struct file *filep)
 		return -ENOMEM;
 
 	rc = msm_open_common(inode, filep, 0);
-<<<<<<< HEAD
-	if (rc < 0)
-		return rc;
-
-=======
 	if (rc < 0) {
 		kfree(ctrl_pmsm);
 		return rc;
 	}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	ctrl_pmsm->pmsm = filep->private_data;
 	filep->private_data = ctrl_pmsm;
 
@@ -3303,13 +2806,7 @@ static int msm_open_control(struct inode *inode, struct file *filep)
 
 	if (!g_v4l2_opencnt)
 		g_v4l2_control_device = ctrl_pmsm;
-<<<<<<< HEAD
-
 	g_v4l2_opencnt++;
-
-=======
-	g_v4l2_opencnt++;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	CDBG("%s: rc %d\n", __func__, rc);
 	return rc;
 }
@@ -3332,11 +2829,7 @@ static int __msm_v4l2_control(struct msm_sync *sync,
 	}
 	qcmd->type = MSM_CAM_Q_V4L2_REQ;
 	qcmd->command = out;
-<<<<<<< HEAD
-	qcmd->on_heap = 1;
-=======
 	atomic_set(&qcmd->on_heap, 1);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	if (out->type == V4L2_CAMERA_EXIT) {
 		rcmd = __msm_control(sync, NULL, qcmd, out->timeout_ms);
@@ -3466,13 +2959,10 @@ static int msm_sync_init(struct msm_sync *sync,
 	msm_queue_init(&sync->pict_q, "pict");
 	msm_queue_init(&sync->vpe_q, "vpe");
 
-<<<<<<< HEAD
-=======
 	wake_lock_init(&sync->suspend_lock,
 			WAKE_LOCK_SUSPEND,
 			"msm_camera_suspend");
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	wake_lock_init(&sync->wake_lock, WAKE_LOCK_IDLE, "msm_camera");
 
 	rc = msm_camio_probe_on(pdev);
@@ -3488,12 +2978,9 @@ static int msm_sync_init(struct msm_sync *sync,
 		pr_err("%s: failed to initialize %s\n",
 			__func__,
 			sync->sdata->sensor_name);
-<<<<<<< HEAD
-=======
 
 		wake_lock_destroy(&sync->suspend_lock);
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		wake_lock_destroy(&sync->wake_lock);
 		return rc;
 	}
@@ -3506,11 +2993,8 @@ static int msm_sync_init(struct msm_sync *sync,
 
 static int msm_sync_destroy(struct msm_sync *sync)
 {
-<<<<<<< HEAD
-=======
 	wake_lock_destroy(&sync->suspend_lock);
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	wake_lock_destroy(&sync->wake_lock);
 	return 0;
 }

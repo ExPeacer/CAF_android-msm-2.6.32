@@ -102,7 +102,7 @@ int mdp4_dsi_video_on(struct platform_device *pdev)
 		ptype = mdp4_overlay_format2type(mfd->fb_imgType);
 		if (ptype < 0)
 			printk(KERN_INFO "%s: format2type failed\n", __func__);
-		pipe = mdp4_overlay_pipe_alloc(ptype);
+		pipe = mdp4_overlay_pipe_alloc(ptype, FALSE);
 		if (pipe == NULL) {
 			printk(KERN_INFO "%s: pipe_alloc failed\n", __func__);
 			return -EBUSY;
@@ -272,7 +272,7 @@ void mdp4_dsi_video_overlay(struct msm_fb_data_type *mfd)
 	buf += fbi->var.xoffset * bpp +
 		fbi->var.yoffset * fbi->fix.line_length;
 
-	mutex_lock(&mfd->dma->ov_mutex);
+	down(&mfd->dma->ov_sem);
 
 	pipe = dsi_pipe;
 	pipe->srcp0_addr = (uint32) buf;
@@ -292,6 +292,6 @@ void mdp4_dsi_video_overlay(struct msm_fb_data_type *mfd)
 	mdp_disable_irq(MDP_OVERLAY0_TERM);
 
 	mdp4_stat.kickoff_dsi++;
-
-	mutex_unlock(&mfd->dma->ov_mutex);
+	mdp4_overlay_resource_release();
+	up(&mfd->dma->ov_sem);
 }

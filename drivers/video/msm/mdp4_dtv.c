@@ -1,4 +1,5 @@
 /* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+ * Copyright (C) 2011 Sony Ericsson Mobile Communications AB.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -37,6 +38,11 @@
 #include <linux/pm_runtime.h>
 
 #include "msm_fb.h"
+#include "mdp4.h"
+
+
+#define MSM_AXI_QOS_DTV_ON     192000
+
 
 static int dtv_probe(struct platform_device *pdev);
 static int dtv_remove(struct platform_device *pdev);
@@ -52,7 +58,7 @@ static struct clk *tv_enc_clk;
 static struct clk *tv_dac_clk;
 static struct clk *hdmi_clk;
 static struct clk *mdp_tv_clk;
-
+static unsigned long tv_src_clk_default_rate;
 
 static int mdp4_dtv_runtime_suspend(struct device *dev)
 {
@@ -87,11 +93,9 @@ static struct lcdc_platform_data *dtv_pdata;
 
 static int dtv_off(struct platform_device *pdev)
 {
-	int ret = 0;
+	int ret = 0, r = 0;
 
 	ret = panel_next_off(pdev);
-
-	pr_info("%s\n", __func__);
 
 	clk_disable(tv_enc_clk);
 	clk_disable(tv_dac_clk);
@@ -105,9 +109,13 @@ static int dtv_off(struct platform_device *pdev)
 	if (dtv_pdata && dtv_pdata->lcdc_gpio_config)
 		ret = dtv_pdata->lcdc_gpio_config(0);
 
+	r = clk_set_rate(tv_src_clk, tv_src_clk_default_rate);
 	pm_qos_update_requirement(PM_QOS_SYSTEM_BUS_FREQ , "dtv",
 					PM_QOS_DEFAULT_VALUE);
+	pr_info("%s: tv_src_clk=%ldkHz, pm_qos_rate=%dkHz, [%d]\n", __func__,
+		tv_src_clk_default_rate/1000, PM_QOS_DEFAULT_VALUE, r);
 
+	mdp4_extn_disp = 0;
 	return ret;
 }
 
@@ -123,15 +131,13 @@ static int dtv_on(struct platform_device *pdev)
 #ifdef CONFIG_MSM_NPA_SYSTEM_BUS
 	pm_qos_rate = MSM_AXI_FLOW_MDP_DTV_720P_2BPP;
 #else
-	if (panel_pixclock_freq > 58000000)
-		/* pm_qos_rate should be in Khz */
-		pm_qos_rate = panel_pixclock_freq / 1000 ;
-	else
-		pm_qos_rate = 58000;
+	pm_qos_rate = MSM_AXI_QOS_DTV_ON;
 #endif
 
 	pm_qos_update_requirement(PM_QOS_SYSTEM_BUS_FREQ , "dtv",
 						pm_qos_rate);
+	mdp_set_core_clk(1);
+	mdp4_extn_disp = 1;
 	mfd = platform_get_drvdata(pdev);
 
 	ret = clk_set_rate(tv_src_clk, mfd->fbi->var.pixclock);
@@ -283,6 +289,7 @@ static int __init dtv_driver_init(void)
 		pr_info("%s: tv_src_clk not available, using tv_enc_clk"
 			" instead\n", __func__);
 	}
+	tv_src_clk_default_rate = clk_get_rate(tv_src_clk);
 
 	hdmi_clk = clk_get(NULL, "hdmi_clk");
 	if (IS_ERR(hdmi_clk)) {

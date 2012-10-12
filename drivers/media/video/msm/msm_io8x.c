@@ -134,13 +134,6 @@ void msm_camio_clk_rate_set(int rate)
 int msm_camio_enable(struct platform_device *pdev)
 {
 	int rc = 0;
-<<<<<<< HEAD
-	struct msm_camera_sensor_info *sinfo = pdev->dev.platform_data;
-	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
-
-	camio_ext = camdev->ioext;
-=======
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	appio = request_mem_region(camio_ext.appphy,
 		camio_ext.appsz, pdev->name);
@@ -154,56 +147,6 @@ int msm_camio_enable(struct platform_device *pdev)
 		rc = -ENOMEM;
 		goto apps_no_mem;
 	}
-<<<<<<< HEAD
-
-	mdcio = request_mem_region(camio_ext.mdcphy,
-		camio_ext.mdcsz, pdev->name);
-	if (!mdcio) {
-		rc = -EBUSY;
-		goto mdc_busy;
-	}
-
-	mdcbase = ioremap(camio_ext.mdcphy, camio_ext.mdcsz);
-	if (!mdcbase) {
-		rc = -ENOMEM;
-		goto mdc_no_mem;
-	}
-
-	camdev->camera_gpio_on();
-
-	msm_camio_clk_enable(CAMIO_VFE_CLK);
-	msm_camio_clk_enable(CAMIO_MDC_CLK);
-	msm_camio_clk_enable(CAMIO_VFE_MDC_CLK);
-	msm_camio_clk_enable(CAMIO_VFE_AXI_CLK);
-	return 0;
-
-mdc_no_mem:
-	release_mem_region(camio_ext.mdcphy, camio_ext.mdcsz);
-mdc_busy:
-	iounmap(appbase);
-apps_no_mem:
-	release_mem_region(camio_ext.appphy, camio_ext.appsz);
-enable_fail:
-	return rc;
-}
-
-void msm_camio_disable(struct platform_device *pdev)
-{
-	struct msm_camera_sensor_info *sinfo = pdev->dev.platform_data;
-	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
-
-	iounmap(mdcbase);
-	release_mem_region(camio_ext.mdcphy, camio_ext.mdcsz);
-	iounmap(appbase);
-	release_mem_region(camio_ext.appphy, camio_ext.appsz);
-
-	camdev->camera_gpio_off();
-
-	msm_camio_clk_disable(CAMIO_VFE_MDC_CLK);
-	msm_camio_clk_disable(CAMIO_MDC_CLK);
-	msm_camio_clk_disable(CAMIO_VFE_CLK);
-	msm_camio_clk_disable(CAMIO_VFE_AXI_CLK);
-=======
 	msm_camio_clk_enable(CAMIO_MDC_CLK);
 	msm_camio_clk_enable(CAMIO_VFE_AXI_CLK);
 	return 0;
@@ -260,7 +203,6 @@ int msm_camio_sensor_clk_off(struct platform_device *pdev)
 	msm_camio_clk_disable(CAMIO_VFE_CLK);
 	return msm_camio_clk_disable(CAMIO_VFE_MDC_CLK);
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 }
 
 void msm_disable_io_gpio_clk(struct platform_device *pdev)

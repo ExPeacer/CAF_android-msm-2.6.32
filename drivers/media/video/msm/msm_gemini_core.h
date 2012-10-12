@@ -1,8 +1,5 @@
 /* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
-<<<<<<< HEAD
-=======
  * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -49,12 +46,9 @@ int msm_gemini_core_we_buf_update(struct msm_gemini_core_buf *buf);
 int msm_gemini_core_reset(uint8_t op_mode, void *base, int size);
 int msm_gemini_core_fe_start(void);
 
-<<<<<<< HEAD
-=======
 void msm_gemini_core_release(void);
 
 #if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
 struct msm_gemini_core_buf *msm_gemini_core_get_we_nonactive_buffer(void);
 #endif
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 #endif /* MSM_GEMINI_CORE_H */

@@ -1,4 +1,5 @@
 /* Copyright (c) 2009-2010, Code Aurora Forum. All rights reserved.
+ * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -179,6 +180,9 @@ struct msm_sensor_ctrl {
 	int (*s_init)(const struct msm_camera_sensor_info *);
 	int (*s_release)(void);
 	int (*s_config)(void __user *);
+#ifdef CONFIG_MACH_SEMC_ZEUS
+	int (*s_get_capture_started)(void);
+#endif /* CONFIG_MACH_SEMC_ZEUS */
 };
 struct msm_strobe_flash_ctrl {
 	int (*strobe_flash_init)
@@ -197,8 +201,9 @@ struct msm_queue_cmd {
 	struct list_head list_vpe_frame;
 	enum msm_queue type;
 	void *command;
-	int on_heap;
+	atomic_t on_heap;
 	struct timespec ts;
+	uint32_t error_code;
 };
 
 struct msm_device_queue {
@@ -243,6 +248,8 @@ struct msm_sync {
 	struct msm_camvpe_fn vpefn;
 	struct msm_sensor_ctrl sctrl;
 	struct msm_strobe_flash_ctrl sfctrl;
+	struct wake_lock suspend_lock;
+
 	struct wake_lock wake_lock;
 	struct platform_device *pdev;
 	uint8_t opencnt;
@@ -251,6 +258,7 @@ struct msm_sync {
 
 	atomic_t vpe_enable;
 	uint32_t pp_mask;
+	uint8_t pp_frame_avail;
 	struct msm_queue_cmd *pp_prev;
 	struct msm_queue_cmd *pp_snap;
 	struct msm_queue_cmd *pp_thumb;
@@ -261,6 +269,14 @@ struct msm_sync {
 	struct mutex lock;
 	struct list_head list;
 	uint8_t liveshot_enabled;
+
+	spinlock_t pmem_frame_spinlock;
+	spinlock_t pmem_stats_spinlock;
+	spinlock_t abort_pict_lock;
+
+#ifdef CONFIG_MACH_SEMC_ZEUS
+	uint8_t validframe;
+#endif /* CONFIG_MACH_SEMC_ZEUS */
 };
 
 #define MSM_APPS_ID_V4L2 "msm_v4l2"
@@ -427,6 +443,10 @@ int  msm_camio_clk_disable(enum msm_camio_clk_type clk);
 int  msm_camio_clk_config(uint32_t freq);
 void msm_camio_clk_rate_set(int rate);
 void msm_camio_clk_rate_set_2(struct clk *clk, int rate);
+void msm_camio_clk_set_min_rate(struct clk *clk, int rate);
+#if defined(CONFIG_SEMC_CAMERA_MODULE) || defined(CONFIG_SEMC_SUB_CAMERA_MODULE)
+void msm_camio_cam_mclk_enable(int rate);
+#endif
 void msm_camio_clk_axi_rate_set(int rate);
 void msm_disable_io_gpio_clk(struct platform_device *);
 
@@ -439,6 +459,8 @@ void msm_camio_clk_sel(enum msm_camio_clk_src_type);
 void msm_camio_disable(struct platform_device *);
 int msm_camio_probe_on(struct platform_device *);
 int msm_camio_probe_off(struct platform_device *);
+int msm_camio_sensor_clk_off(struct platform_device *);
+int msm_camio_sensor_clk_on(struct platform_device *);
 int msm_camio_csi_config(struct msm_camera_csi_params *csi_params);
 int add_axi_qos(void);
 int update_axi_qos(uint32_t freq);

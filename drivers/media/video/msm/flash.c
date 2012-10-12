@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-
-/* Copyright (c) 2009-2010, Code Aurora Forum. All rights reserved.
-=======
 /* Copyright (c) 2009-2010, Code Aurora Forum. All rights reserved.
  * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -28,12 +23,9 @@
 #include <linux/hrtimer.h>
 #include <mach/pmic.h>
 #include <mach/camera.h>
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 #include <linux/delay.h>
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 #include <mach/gpio.h>
 
 struct timer_list timer_flash;
@@ -122,8 +114,6 @@ int msm_camera_flash_pmic(
 	return rc;
 }
 
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 /**
  * Access GPIO
@@ -186,7 +176,6 @@ int msm_camera_flash_gpio(
 }
 #endif /* CONFIG_MACH_SEMC_ZEUS */
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 int32_t msm_camera_flash_set_led_state(
 	struct msm_camera_sensor_flash_data *fdata, unsigned led_state)
 {
@@ -208,16 +197,12 @@ int32_t msm_camera_flash_set_led_state(
 		rc = msm_camera_flash_pwm(&fdata->flash_src->_fsrc.pwm_src,
 			led_state);
 		break;
-<<<<<<< HEAD
-
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 	case MSM_CAMERA_FLASH_SRC_LED:
 			rc = msm_camera_flash_gpio(fdata->flash_src->_fsrc.gpio_led_src,
 				led_state);
 			break;
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	default:
 		rc = -ENODEV;
 		break;

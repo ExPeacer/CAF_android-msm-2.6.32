@@ -317,10 +317,7 @@ static long mt9d112_set_effect(int mode, int effect)
 		reg_addr = 0x2799;
 		break;
 
-<<<<<<< HEAD
-=======
 	case SENSOR_RAW_SNAPSHOT_MODE:
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	case SENSOR_SNAPSHOT_MODE:
 		/* Context B Special Effects */
 		reg_addr = 0x279B;
@@ -547,11 +544,7 @@ static long mt9d112_set_sensor_mode(int mode)
 			0x3390, 0x6440, WORD_LEN);
 		if (rc < 0)
 			return rc;
-<<<<<<< HEAD
-
-=======
 		msleep(40);/*waiting for the delay of one frame*/
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		/* Switch to lower fps for Snapshot */
 		rc =
 			mt9d112_i2c_write(mt9d112_client->addr,
@@ -570,23 +563,13 @@ static long mt9d112_set_sensor_mode(int mode)
 				0x3390, 0x0002, WORD_LEN);
 		if (rc < 0)
 			return rc;
-<<<<<<< HEAD
-
-		msleep(40);
-
-=======
 		msleep(80);/*waiting for the delay of two frames frame*/
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		rc =
 			mt9d112_i2c_write(mt9d112_client->addr,
 				0x338C, 0xA103, WORD_LEN);
 		if (rc < 0)
 			return rc;
-<<<<<<< HEAD
-
-=======
 		msleep(40);/*waiting for the delay of one frame*/
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		rc =
 			mt9d112_i2c_write(mt9d112_client->addr,
 				0x3390, 0x0002, WORD_LEN);

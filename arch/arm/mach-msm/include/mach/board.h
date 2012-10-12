@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2007 Google, Inc.
  * Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
+ * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -21,6 +22,9 @@
 #include <linux/types.h>
 #include <linux/input.h>
 #include <linux/usb.h>
+#ifdef CONFIG_MACH_SEMC_ZEUS
+#include <linux/leds.h>
+#endif /* CONFIG_MACH_SEMC_ZEUS */
 #include <linux/leds-pmic8058.h>
 
 /* platform device data structures */
@@ -82,8 +86,26 @@ struct msm_camera_legacy_device_platform_data {
 #define MSM_CAMERA_FLASH_NONE 0
 #define MSM_CAMERA_FLASH_LED  1
 
+enum msm_camera_sensor_pwr_type {
+	MSM_CAMERA_SENSOR_PWR_NONE,
+	MSM_CAMERA_SENSOR_PWR_GPIO,
+	MSM_CAMERA_SENSOR_PWR_VREG,
+	MSM_CAMERA_SENSOR_PWR_MAX
+};
+
+struct msm_camera_sensor_pwr {
+	enum msm_camera_sensor_pwr_type type;
+	union {
+		const char *name;
+		int number;
+	} resource;
+};
+
 #define MSM_CAMERA_FLASH_SRC_PMIC (0x00000001<<0)
 #define MSM_CAMERA_FLASH_SRC_PWM  (0x00000001<<1)
+#ifdef CONFIG_MACH_SEMC_ZEUS
+#define MSM_CAMERA_FLASH_SRC_LED  (0x00000001<<2)
+#endif /* CONFIG_MACH_SEMC_ZEUS */
 
 struct msm_camera_sensor_flash_pmic {
 	uint8_t num_of_src;
@@ -108,6 +130,9 @@ struct msm_camera_sensor_flash_src {
 	union {
 		struct msm_camera_sensor_flash_pmic pmic_src;
 		struct msm_camera_sensor_flash_pwm pwm_src;
+#ifdef CONFIG_MACH_SEMC_ZEUS
+		struct gpio_led_platform_data *gpio_led_src;
+#endif /* CONFIG_MACH_SEMC_ZEUS */
 	} _fsrc;
 };
 
@@ -127,6 +152,7 @@ struct msm_camera_sensor_strobe_flash_data {
 struct msm_camera_sensor_info {
 	const char *sensor_name;
 	int sensor_reset;
+	int sub_sensor_reset;
 	int sensor_pwd;
 	int vcm_pwd;
 	int vcm_enable;
@@ -138,6 +164,10 @@ struct msm_camera_sensor_info {
 	struct msm_camera_sensor_flash_data *flash_data;
 	int csi_if;
 	struct msm_camera_csi_params csi_params;
+	struct msm_camera_sensor_pwr vcam_io;
+	struct msm_camera_sensor_pwr vcam_sd;
+	struct msm_camera_sensor_pwr vcam_af;
+	struct msm_camera_sensor_pwr vcam_sa;
 	struct msm_camera_sensor_strobe_flash_data *strobe_flash_data;
 };
 
@@ -205,6 +235,7 @@ struct msm_adspdec_database {
 };
 
 struct msm_panel_common_pdata {
+	uintptr_t hw_revision_addr;
 	int gpio;
 	int (*backlight_level)(int level, int max, int min);
 	int (*pmic_backlight)(int level);
@@ -212,6 +243,8 @@ struct msm_panel_common_pdata {
 	void (*panel_config_gpio)(int);
 	int *gpio_num;
 	int mdp_core_clk_rate;
+	unsigned num_mdp_clk;
+	int *mdp_core_clk_table;
 };
 
 struct lcdc_platform_data {
@@ -226,6 +259,7 @@ struct tvenc_platform_data {
 struct mddi_platform_data {
 	int (*mddi_power_save)(int on);
 	int (*mddi_sel_clk)(u32 *clk_rate);
+	int (*mddi_client_power)(u32 client_id);
 };
 
 struct mipi_dsi_platform_data {
@@ -241,6 +275,11 @@ struct msm_fb_platform_data {
 struct msm_hdmi_platform_data {
 	int irq;
 	int (*cable_detect)(int insert);
+	int (*comm_power)(int on, int show);
+	int (*enable_5v)(int on);
+	int (*core_power)(int on);
+	int (*cec_power)(int on);
+	int (*init_irq)(void);
 };
 
 struct msm_i2c_platform_data {
@@ -297,10 +336,13 @@ static inline void msm_hsusb_set_vbus_state(int online) {}
 #endif
 
 void __init msm_snddev_init(void);
+void __init msm_snddev_init_timpani(void);
 void msm_snddev_poweramp_on(void);
 void msm_snddev_poweramp_off(void);
 void msm_snddev_hsed_voltage_on(void);
 void msm_snddev_hsed_voltage_off(void);
+void msm_hac_amp_on(void);
+void msm_hac_amp_off(void);
 void msm_snddev_tx_route_config(void);
 void msm_snddev_tx_route_deconfig(void);
 void msm_snddev_rx_route_config(void);

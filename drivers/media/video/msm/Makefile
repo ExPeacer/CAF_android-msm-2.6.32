@@ -24,9 +24,6 @@ obj-$(CONFIG_VX6953) += vx6953.o vx6953_reg.o
 obj-$(CONFIG_VB6801) += vb6801.o
 obj-$(CONFIG_IMX074) += imx074.o imx074_reg.o
 obj-$(CONFIG_WEBCAM_OV7692) += ov7692.o
-
-obj-$(CONFIG_MSM_GEMINI) += msm_gemini_dev.o msm_gemini_sync.o msm_gemini_core.o msm_gemini_hw.o msm_gemini_platform.o
-
 obj-$(CONFIG_SEMC_CAMERA_MODULE) += semc_camera_module.o
 obj-$(CONFIG_SEMC_SUB_CAMERA_MODULE) += semc_sub_camera_module.o
 obj-$(CONFIG_MSM_GEMINI) += msm_gemini_dev.o msm_gemini_sync.o msm_gemini_core.o msm_gemini_hw.o msm_gemini_platform.o

@@ -83,6 +83,7 @@ struct marimba_fm_platform_data{
 
 struct marimba_codec_platform_data{
 	int (*marimba_codec_power)(int vreg_on);
+	void (*snddev_profile_init) (void);
 };
 
 struct marimba_tsadc_setup_params {
@@ -138,6 +139,7 @@ struct marimba_platform_data {
 	u8 slave_id[MARIMBA_NUM_CHILD + 1];
 	u32 (*marimba_setup) (void);
 	void (*marimba_shutdown) (void);
+	u32 (*marimba_gpio_config) (int);
 };
 
 /*
@@ -167,4 +169,5 @@ int timpani_write(struct marimba*, u8 reg, u8 *value,
 
 /* Get the detected codec type */
 int adie_get_detected_codec_type(void);
+int marimba_gpio_config(int gpio_value);
 #endif

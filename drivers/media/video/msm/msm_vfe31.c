@@ -1,8 +1,5 @@
 /* Copyright (c) 2009 - 2010, Code Aurora Forum. All rights reserved.
-<<<<<<< HEAD
-=======
  * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,13 +21,9 @@
 #include <linux/interrupt.h>
 #include <mach/irqs.h>
 #include "msm_vfe31.h"
-<<<<<<< HEAD
-#include "msm_vpe1.h"
-=======
 #ifdef CONFIG_MSM_VPE
 #include "msm_vpe1.h"
 #endif
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 #include <mach/camera.h>
 #include <linux/io.h>
 #include <mach/msm_reqs.h>
@@ -198,12 +191,9 @@ static struct vfe31_cmd_type vfe31_cmd[] = {
 			V31_SYNC_TIMER_OFF},
 /*105*/	{V31_ASYNC_TIMER_SETTING, V31_ASYNC_TIMER_LEN, V31_ASYNC_TIMER_OFF},
 		{V31_LIVESHOT},
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 		{V31_START_RAW_CAPTURE, 0, 0},
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 };
 
 static void vfe_addr_convert(struct msm_vfe_phy_info *pinfo,
@@ -479,14 +469,9 @@ static void vfe31_release(struct platform_device *pdev)
 	vfemem = vfe31_ctrl->vfemem;
 	vfeio  = vfe31_ctrl->vfeio;
 
-<<<<<<< HEAD
-	msm_vpe_release();
-
-=======
 #ifdef CONFIG_MSM_VPE
 	msm_vpe_release();
 #endif
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	kfree(vfe31_ctrl->extdata);
 	free_irq(vfe31_ctrl->vfeirq, 0);
 	iounmap(vfe31_ctrl->vfebase);
@@ -520,15 +505,10 @@ static int vfe31_config_axi(int mode, struct axidata *ad, uint32_t *ao)
 	case OUTPUT_2: {
 		if (ad->bufnum2 != 3)
 			return -EINVAL;
-<<<<<<< HEAD
-		*p = 0x200;    /* preview with wm0 & wm1 */
-
-=======
 
 		/* set from user driver side start */
 		/* *p = 0x200;*/    /* preview with wm0 & wm1 */
 		/* set from user driver side end */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		vfe31_ctrl->outpath.out0.ch0 = 0; /* luma   */
 		vfe31_ctrl->outpath.out0.ch1 = 1; /* chroma */
 		regp1 = &(ad->region[ad->bufnum1]);
@@ -560,15 +540,10 @@ static int vfe31_config_axi(int mode, struct axidata *ad, uint32_t *ao)
 		if ((ad->bufnum1 < 1) || (ad->bufnum2 < 1))
 			return -EINVAL;
 		/* at least one frame for snapshot.  */
-<<<<<<< HEAD
-		*p++ = 0x1;    /* xbar cfg0 */
-		*p = 0x203;    /* xbar cfg1 */
-=======
 		/* set from user driver side start */
 		/* *p++ = 0x1; */    /* xbar cfg0 */
 		/* *p = 0x203; */    /* xbar cfg1 */
 		/* set from user driver side end */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		vfe31_ctrl->outpath.out0.ch0 = 0; /* thumbnail luma   */
 		vfe31_ctrl->outpath.out0.ch1 = 4; /* thumbnail chroma */
 		vfe31_ctrl->outpath.out1.ch0 = 1; /* main image luma   */
@@ -695,10 +670,6 @@ static int vfe31_config_axi(int mode, struct axidata *ad, uint32_t *ao)
 		if (ad->bufnum2 < 1)
 			return -EINVAL;
 		CDBG("config axi for raw snapshot.\n");
-<<<<<<< HEAD
-		*p = 0x60;    /* raw snapshot with wm0 */
-=======
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		vfe31_ctrl->outpath.out1.ch0 = 0; /* raw */
 		regp1 = &(ad->region[ad->bufnum1]);
 		vfe31_ctrl->outpath.output_mode |= VFE31_OUTPUT_MODE_S;
@@ -706,8 +677,6 @@ static int vfe31_config_axi(int mode, struct axidata *ad, uint32_t *ao)
 		*p1 = (regp1->paddr + regp1->info.y_off);
 		}
 		break;
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 	case CAMIF_TO_OUTPUT_CONTINUOUS_RAW: {
 		CDBG("DEBBUG: ad->bufnum1 = %d \n",ad->bufnum1);
@@ -742,7 +711,6 @@ static int vfe31_config_axi(int mode, struct axidata *ad, uint32_t *ao)
 		}
 		break;
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	default:
 		break;
 	}
@@ -981,13 +949,6 @@ static int vfe31_start_recording(void){
 }
 
 static int vfe31_stop_recording(void){
-<<<<<<< HEAD
-	vfe31_ctrl->req_stop_video_rec = TRUE;
-	update_axi_qos(MSM_AXI_QOS_PREVIEW);
-	return 0;
-}
-
-=======
 
 	vfe31_ctrl->req_stop_video_rec = TRUE;
 	update_axi_qos(MSM_AXI_QOS_PREVIEW);
@@ -1015,7 +976,6 @@ static int vfe31_start_raw_capture(void)
 }
 #endif /* CONFIG_MACH_SEMC_ZEUS */
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 static void vfe31_liveshot(void){
 	struct msm_sync* p_sync = (struct msm_sync *)vfe_syncdata;
 	if (p_sync) {
@@ -1267,21 +1227,14 @@ static int vfe31_proc_general(struct msm_vfe31_cmd *cmd)
 		vfe31_update();
 		break;
 	case V31_CAPTURE:
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 		snapshot_cnt = 1;
 #else
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (copy_from_user(&snapshot_cnt, (void __user *)(cmd->value),
 				sizeof(uint32_t))) {
 			rc = -EFAULT;
 			goto proc_general_done;
 		}
-<<<<<<< HEAD
-		rc = vfe31_capture(snapshot_cnt);
-		break;
-=======
 #endif /* CONFIG_MACH_SEMC_ZEUS */
 		rc = vfe31_capture(snapshot_cnt);
 		break;
@@ -1290,7 +1243,6 @@ static int vfe31_proc_general(struct msm_vfe31_cmd *cmd)
 		rc = vfe31_start_raw_capture();
 		break;
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	case V31_START_RECORDING:
 		rc = vfe31_start_recording();
 		break;
@@ -1849,28 +1801,18 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 		(cmd->cmd_type == CMD_STATS_AEC_ENABLE)) {
 		struct axidata *axid;
 		axid = data;
-<<<<<<< HEAD
-		if (!axid)
-			return -EFAULT;
-=======
 		if (!axid) {
 			rc = -EFAULT;
 			goto vfe31_config_done;
 		}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 		scfg =
 			kmalloc(sizeof(struct vfe_cmd_stats_buf),
 				GFP_ATOMIC);
-<<<<<<< HEAD
-		if (!scfg)
-			return -ENOMEM;
-=======
 		if (!scfg) {
 			rc = -ENOMEM;
 			goto vfe31_config_done;
 		}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		regptr = axid->region;
 		if (axid->bufnum1 > 0) {
 			for (i = 0; i < axid->bufnum1; i++) {
@@ -1909,15 +1851,10 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 		struct msm_frame *b;
 		unsigned long p;
 		struct vfe31_free_buf *fbuf = NULL;
-<<<<<<< HEAD
-		if (!data)
-			return -EFAULT;
-=======
 		if (!data) {
 			rc = -EFAULT;
 			break;
 		}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 		b = (struct msm_frame *)(cmd->value);
 		p = *(unsigned long *)data;
@@ -1931,15 +1868,10 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 			fbuf = &vfe31_ctrl->outpath.out1.free_buf;
 		} else if (b->path & OUTPUT_TYPE_V) {
 			fbuf = &vfe31_ctrl->outpath.out2.free_buf;
-<<<<<<< HEAD
-		} else
-			return -EFAULT;
-=======
 		} else {
 			rc = -EFAULT;
 			break;
 		}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 		fbuf->paddr = p;
 		fbuf->y_off = b->y_off;
@@ -1975,15 +1907,6 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 		struct axidata *axid;
 		uint32_t *axio = NULL;
 		axid = data;
-<<<<<<< HEAD
-		if (!axid)
-			return -EFAULT;
-		axio =
-			kmalloc(vfe31_cmd[V31_AXI_OUT_CFG].length,
-				GFP_ATOMIC);
-		if (!axio)
-			return -ENOMEM;
-=======
 		if (!axid) {
 			rc = -EFAULT;
 			break;
@@ -1995,17 +1918,12 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 			rc = -ENOMEM;
 			break;
 		}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 		if (copy_from_user(axio, (void __user *)(vfecmd.value),
 				vfe31_cmd[V31_AXI_OUT_CFG].length)) {
 			kfree(axio);
-<<<<<<< HEAD
-			return -EFAULT;
-=======
 			rc = -EFAULT;
 			break;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		}
 		vfe31_config_axi(OUTPUT_2, axid, axio);
 		kfree(axio);
@@ -2016,8 +1934,6 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 		struct axidata *axid;
 		uint32_t *axio = NULL;
 		axid = data;
-<<<<<<< HEAD
-=======
 		if (!axid) {
 			rc = -EFAULT;
 			break;
@@ -2046,7 +1962,6 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 		uint32_t *axio = NULL;
 		axid = data;
                 printk("vfe31_config CMD_AXI_CFG_CONT_RAW_RGB:\n");
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (!axid)
 			return -EFAULT;
 		axio =
@@ -2060,19 +1975,11 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 			kfree(axio);
 			return -EFAULT;
 		}
-<<<<<<< HEAD
-		vfe31_config_axi(CAMIF_TO_AXI_VIA_OUTPUT_2, axid, axio);
-		kfree(axio);
-	}
-		break;
-
-=======
 		vfe31_config_axi(CAMIF_TO_OUTPUT_CONTINUOUS_RAW, axid, axio);
 		kfree(axio);
 	}
                 break;
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	case CMD_AXI_CFG_SNAP: {
 		struct axidata *axid;
 		uint32_t *axio = NULL;
@@ -2082,25 +1989,16 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 		axio =
 			kmalloc(vfe31_cmd[V31_AXI_OUT_CFG].length,
 				GFP_ATOMIC);
-<<<<<<< HEAD
-		if (!axio)
-			return -ENOMEM;
-=======
 		if (!axio) {
 			rc = -ENOMEM;
 			break;
 		}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 		if (copy_from_user(axio, (void __user *)(vfecmd.value),
 				vfe31_cmd[V31_AXI_OUT_CFG].length)) {
 			kfree(axio);
-<<<<<<< HEAD
-			return -EFAULT;
-=======
 			rc = -EFAULT;
 			break;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		}
 		vfe31_config_axi(OUTPUT_1_AND_2, axid, axio);
 		kfree(axio);
@@ -2111,15 +2009,6 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 		struct axidata *axid;
 		uint32_t *axio = NULL;
 		axid = data;
-<<<<<<< HEAD
-		if (!axid)
-			return -EFAULT;
-		axio =
-			kmalloc(vfe31_cmd[V31_AXI_OUT_CFG].length,
-				GFP_ATOMIC);
-		if (!axio)
-			return -ENOMEM;
-=======
 		if (!axid) {
 			rc = -EFAULT;
 			break;
@@ -2132,17 +2021,12 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 			rc = -ENOMEM;
 			break;
 		}
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 		if (copy_from_user(axio, (void __user *)(vfecmd.value),
 				vfe31_cmd[V31_AXI_OUT_CFG].length)) {
 			kfree(axio);
-<<<<<<< HEAD
-			return -EFAULT;
-=======
 			rc = -EFAULT;
 			break;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		}
 		vfe31_config_axi(OUTPUT_1_AND_3, axid, axio);
 		kfree(axio);
@@ -2151,10 +2035,7 @@ static int vfe31_config(struct msm_vfe_cfg_cmd *cmd, void *data)
 	default:
 		break;
 	}
-<<<<<<< HEAD
-=======
 vfe31_config_done:
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	kfree(scfg);
 	kfree(sack);
 	CDBG("%s done: rc = %d\n", __func__, (int) rc);
@@ -2208,12 +2089,9 @@ static void vfe31_process_reg_update_irq(void)
 				24 * (vfe31_ctrl->outpath.out2.ch1));
 			temp = msm_io_r(vfe31_ctrl->vfebase + V31_AXI_OUT_OFF +
 				20 + 24 * (vfe31_ctrl->outpath.out2.ch1));
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 			msm_io_w(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			/* Mask with 0x7 to extract the pixel pattern*/
 			switch (msm_io_r(vfe31_ctrl->vfebase + VFE_CFG_OFF)
 				& 0x7) {
@@ -2229,10 +2107,7 @@ static void vfe31_process_reg_update_irq(void)
 			}
 		}
 		vfe31_ctrl->req_start_video_rec =  FALSE;
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MSM_VPE
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (vpe_ctrl->dis_en) {
 			old_val = msm_io_r(
 				vfe31_ctrl->vfebase + VFE_MODULE_CFG);
@@ -2240,10 +2115,7 @@ static void vfe31_process_reg_update_irq(void)
 			msm_io_w(old_val,
 				vfe31_ctrl->vfebase + VFE_MODULE_CFG);
 		}
-<<<<<<< HEAD
-=======
 #endif
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		CDBG("start video triggered .\n");
 	} else if (vfe31_ctrl->req_stop_video_rec) {
 		if (vfe31_ctrl->outpath.output_mode & VFE31_OUTPUT_MODE_V) {
@@ -2255,12 +2127,9 @@ static void vfe31_process_reg_update_irq(void)
 				24 * (vfe31_ctrl->outpath.out2.ch1));
 			temp = msm_io_r(vfe31_ctrl->vfebase + V31_AXI_OUT_OFF +
 				20 + 24 * (vfe31_ctrl->outpath.out2.ch1));
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 			msm_io_w(1, vfe31_ctrl->vfebase + VFE_REG_UPDATE_CMD);
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			/* Mask with 0x7 to extract the pixel pattern*/
 			switch (msm_io_r(vfe31_ctrl->vfebase + VFE_CFG_OFF)
 				& 0x7) {
@@ -2445,9 +2314,6 @@ static void vfe31_process_axi_halt_irq(void)
 static void vfe31_process_camif_sof_irq(void)
 {
 	uint32_t  temp;
-<<<<<<< HEAD
-	if (vfe31_ctrl->operation_mode == 3) {  /* in raw snapshot mode */
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 	struct msm_sync *sync = (struct msm_sync *)vfe_syncdata;
 	sync->validframe = 1;
@@ -2464,7 +2330,6 @@ static void vfe31_process_camif_sof_irq(void)
 #else
 	if (vfe31_ctrl->operation_mode == 3) {  /* in raw snapshot mode */
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		if (vfe31_ctrl->start_ack_pending) {
 			vfe31_send_msg_no_payload(MSG_ID_START_ACK);
 			vfe31_ctrl->start_ack_pending = FALSE;
@@ -2482,12 +2347,8 @@ static void vfe31_process_camif_sof_irq(void)
 	} /* if raw snapshot mode. */
 	vfe31_send_msg_no_payload(MSG_ID_SOF_ACK);
 	vfe31_ctrl->vfeFrameId++;
-<<<<<<< HEAD
-	CDBG("camif_sof_irq, frameId = %d\n", vfe31_ctrl->vfeFrameId);
-=======
 	CDBG("camif_sof_irq, frameId = %d mode %d\n",
 		vfe31_ctrl->vfeFrameId, vfe31_ctrl->operation_mode);
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 	if (vfe31_ctrl->sync_timer_state) {
 		if (vfe31_ctrl->sync_timer_repeat_count == 0)
@@ -2632,15 +2493,10 @@ static void vfe31_process_output_path_irq_0(void)
 			if (vfe31_ctrl->operation_mode & 1) {
 				/* will add message for multi-shot. */
 				vfe31_ctrl->outpath.out0.capture_cnt--;
-<<<<<<< HEAD
-				vfe_send_outmsg(MSG_ID_OUTPUT_T, pyaddr,
-					pcbcraddr);
-=======
 #ifndef CONFIG_MACH_SEMC_ZEUS
 				vfe_send_outmsg(MSG_ID_OUTPUT_T, pyaddr,
 					pcbcraddr);
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			} else {
 			/* always send message for continous mode. */
 			/* if continuous mode, for display. (preview) */
@@ -2658,12 +2514,9 @@ static void vfe31_process_output_path_irq_1(void)
 {
 	uint32_t ping_pong;
 	uint32_t pyaddr, pcbcraddr;
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 	struct msm_sync *sync = (struct msm_sync *)vfe_syncdata;
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	/* this must be snapshot main image output. */
 	uint8_t out_bool = 0;
 	/* we render frames in the following conditions:
@@ -2702,8 +2555,6 @@ static void vfe31_process_output_path_irq_1(void)
 				vfe31_ctrl->outpath.out1.free_buf.cbcr_off);
 				vfe31_ctrl->outpath.out1.free_buf.available = 0;
 			}
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MACH_SEMC_ZEUS
 			CDBG("vfe31_process_output_path_irq_1 %d %d\n",sync->validframe,vfe31_ctrl->operation_mode);
 			if ((vfe31_ctrl->operation_mode != 3 ) ||
@@ -2711,16 +2562,12 @@ static void vfe31_process_output_path_irq_1(void)
 					vfe31_ctrl->outpath.out1.capture_cnt--;
 			}
 #else
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 			if (vfe31_ctrl->operation_mode & 1) {
 				vfe31_ctrl->outpath.out1.capture_cnt--;
 				vfe_send_outmsg(MSG_ID_OUTPUT_S, pyaddr,
 					pcbcraddr);
 			}
-<<<<<<< HEAD
-=======
 #endif /* CONFIG_MACH_SEMC_ZEUS */
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 		} else {
 			vfe31_ctrl->outpath.out1.frame_drop_cnt++;
 			CDBG("path_irq_1 - no free buffer!\n");
@@ -3282,15 +3129,10 @@ static int vfe31_init(struct msm_vfe_callback *presp,
 		return rc;
 	/* Bring up all the required GPIOs and Clocks */
 	rc = msm_camio_enable(pdev);
-<<<<<<< HEAD
-	if (msm_vpe_open() < 0)
-		CDBG("%s: vpe_open failed\n", __func__);
-=======
 #ifdef CONFIG_MSM_VPE
 	if (msm_vpe_open() < 0)
 		CDBG("%s: vpe_open failed\n", __func__);
 #endif
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	return rc;
 }
 
@@ -3306,8 +3148,6 @@ void msm_camvfe_fn_init(struct msm_camvfe_fn *fptr, void *data)
 
 void msm_camvpe_fn_init(struct msm_camvpe_fn *fptr, void *data)
 {
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_MSM_VPE_STANDALONE
 	fptr->vpe_reg		= NULL;
 	fptr->send_frame_to_vpe	= NULL;
@@ -3315,20 +3155,14 @@ void msm_camvpe_fn_init(struct msm_camvpe_fn *fptr, void *data)
 	fptr->vpe_cfg_update	= NULL;
 	fptr->dis		= NULL;
 #else
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	fptr->vpe_reg		= msm_vpe_reg;
 	fptr->send_frame_to_vpe	= msm_send_frame_to_vpe;
 	fptr->vpe_config	= msm_vpe_config;
 	fptr->vpe_cfg_update	= msm_vpe_cfg_update;
 	fptr->dis		= &(vpe_ctrl->dis_en);
-<<<<<<< HEAD
-	vpe_ctrl->syncdata = data;
-}
-=======
 #endif
 #ifdef CONFIG_MSM_VPE
 	vpe_ctrl->syncdata = data;
 #endif
 }
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10

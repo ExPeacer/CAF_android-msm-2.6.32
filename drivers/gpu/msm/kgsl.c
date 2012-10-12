@@ -1805,13 +1805,13 @@ static int __devinit kgsl_platform_probe(struct platform_device *pdev)
 		clk = NULL;
 	kgsl_driver.g12_grp_pclk = clk;
 
-	if (pdata->grp2d_clk_name != NULL) {
-		clk = clk_get(&pdev->dev, pdata->grp2d_clk_name);
+	if (pdata->grp2d0_clk_name != NULL) {
+		clk = clk_get(&pdev->dev, pdata->grp2d0_clk_name);
 		if (IS_ERR(clk)) {
 			clk = NULL;
 			result = PTR_ERR(clk);
 			KGSL_DRV_ERR("clk_get(%s) returned %d\n",
-				pdata->grp2d_clk_name, result);
+				pdata->grp2d0_clk_name, result);
 		}
 	} else {
 		clk = NULL;

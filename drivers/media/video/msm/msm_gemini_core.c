@@ -1,8 +1,5 @@
 /* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
-<<<<<<< HEAD
-=======
  * Copyright (C) 2010 Sony Ericsson Mobile Communications AB.
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -27,19 +24,13 @@
 
 static struct msm_gemini_hw_pingpong fe_pingpong_buf;
 static struct msm_gemini_hw_pingpong we_pingpong_buf;
-<<<<<<< HEAD
-=======
 static int we_pingpong_index;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 
 int msm_gemini_core_reset(uint8_t op_mode, void *base, int size)
 {
 	memset(&fe_pingpong_buf, 0, sizeof(fe_pingpong_buf));
 	fe_pingpong_buf.is_fe = 1;
-<<<<<<< HEAD
-=======
 	we_pingpong_index = 0;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	memset(&we_pingpong_buf, 0, sizeof(we_pingpong_buf));
 	msm_gemini_hw_reset(base, size);
 
@@ -56,8 +47,6 @@ int msm_gemini_core_reset(uint8_t op_mode, void *base, int size)
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
 void msm_gemini_core_release(void)
 {
 	int i = 0;
@@ -78,7 +67,6 @@ struct msm_gemini_core_buf *msm_gemini_core_get_we_nonactive_buffer()
 }
 #endif
 
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 int msm_gemini_core_fe_start(void)
 {
 	msm_gemini_hw_fe_start();
@@ -106,11 +94,8 @@ int msm_gemini_core_we_buf_update(struct msm_gemini_core_buf *buf)
 	GMN_DBG("%s:%d] 0x%08x 0x%08x %d\n", __func__, __LINE__,
 		(int) buf->y_buffer_addr, (int) buf->cbcr_buffer_addr,
 		buf->y_len);
-<<<<<<< HEAD
-=======
 	we_pingpong_buf.buf_status[we_pingpong_index] = 0;
 	we_pingpong_index = (we_pingpong_index + 1)%2;
->>>>>>> 0f1ae99... drivers/media/video/ - SEMC files import #10
 	rc = msm_gemini_hw_pingpong_update(&we_pingpong_buf, buf);
 	return 0;
 }

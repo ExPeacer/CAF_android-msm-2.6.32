@@ -143,6 +143,7 @@ struct msm_fb_data_type {
 	__u32 bl_level;
 
 	struct platform_device *pdev;
+	struct platform_device *panel_pdev;
 
 	__u32 var_xres;
 	__u32 var_yres;
@@ -158,6 +159,7 @@ struct msm_fb_data_type {
 	struct early_suspend mddi_ext_early_suspend;
 #endif
 	u32 mdp_fb_page_protection;
+	boolean dma_update_flag;
 };
 
 struct dentry *msm_fb_get_debugfs_root(void);

@@ -1,4 +1,5 @@
 /* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011, Sony Ericsson Mobile Communications AB.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -119,6 +120,40 @@ struct adie_codec_register_image {
 
 struct adie_codec_path;
 
+struct adie_codec_anc_data {
+	u32 size;
+	u32 writes[];
+};
+
+struct adie_codec_operations {
+	int	 codec_id;
+	int (*codec_open) (struct adie_codec_dev_profile *profile,
+				struct adie_codec_path **path_pptr);
+	int (*codec_close) (struct adie_codec_path *path_ptr);
+	int (*codec_setpath) (struct adie_codec_path *path_ptr,
+				u32 freq_plan, u32 osr);
+	int (*codec_proceed_stage) (struct adie_codec_path *path_ptr,
+					u32 state);
+	u32 (*codec_freq_supported) (struct adie_codec_dev_profile *profile,
+					u32 requested_freq);
+	int (*codec_enable_sidetone) (struct adie_codec_path *rx_path_ptr,
+					u32 enable);
+	int (*codec_enable_anc) (struct adie_codec_path *rx_path_ptr,
+		u32 enable, struct adie_codec_anc_data *calibration_writes);
+	int (*codec_set_device_digital_volume) (
+					struct adie_codec_path *path_ptr,
+					u32 num_channels,
+					u32 vol_percentage);
+
+	int (*codec_set_device_analog_volume) (struct adie_codec_path *path_ptr,
+						u32 num_channels,
+						u32 volume);
+
+	int (*codec_powerup)(u8 enable);
+};
+
+int adie_codec_register_codec_operations(
+				const struct adie_codec_operations *codec_ops);
 int adie_codec_open(struct adie_codec_dev_profile *profile,
 	struct adie_codec_path **path_pptr);
 int adie_codec_setpath(struct adie_codec_path *path_ptr,
@@ -128,10 +163,13 @@ int adie_codec_close(struct adie_codec_path *path_ptr);
 u32 adie_codec_freq_supported(struct adie_codec_dev_profile *profile,
 							u32 requested_freq);
 int adie_codec_enable_sidetone(struct adie_codec_path *rx_path_ptr, u32 enable);
-
+int adie_codec_enable_anc(struct adie_codec_path *rx_path_ptr, u32 enable,
+	struct adie_codec_anc_data *calibration_writes);
 int adie_codec_set_device_digital_volume(struct adie_codec_path *path_ptr,
 		u32 num_channels, u32 vol_percentage /* in percentage */);
 
 int adie_codec_set_device_analog_volume(struct adie_codec_path *path_ptr,
 		u32 num_channels, u32 volume /* in percentage */);
+
+int adie_codec_powerup(u8 enable);
 #endif
