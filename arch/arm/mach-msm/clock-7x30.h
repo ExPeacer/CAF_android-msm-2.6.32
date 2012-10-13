@@ -32,8 +32,6 @@
 
 enum {
 	L_ADM_CLK,
-	L_ADM_P_CLK,
-	L_CE_CLK,
 	L_I2C_CLK,
 	L_I2C_2_CLK,
 	L_QUP_I2C_CLK,
@@ -169,15 +167,6 @@ extern struct clk_ops soc_clk_ops_7x30;
 	.flags = clk_flags, \
 	.dev = clk_dev, \
 	.dbg_name = #l_id, \
-	}
-
-#define CLK_7X30L(clk_name, l_id, clk_dev, clk_flags) {	\
-	.name = clk_name, \
-	.id = L_##l_id, \
-	.flags = clk_flags, \
-	.dev = clk_dev, \
-	.dbg_name = #l_id, \
-	.ops = &soc_clk_ops_7x30, \
 	}
 
 #endif

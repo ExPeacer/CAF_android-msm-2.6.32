@@ -235,7 +235,7 @@ static int sdio_enable_hs(struct mmc_card *card)
  * we're trying to reinitialise.
  */
 static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
-			      struct mmc_card *oldcard, int powered_resume)
+			      struct mmc_card *oldcard)
 {
 	struct mmc_card *card;
 	int err;
@@ -246,11 +246,9 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
 	/*
 	 * Inform the card of the voltage
 	 */
-	if (!powered_resume) {
-		err = mmc_send_io_op_cond(host, host->ocr, &ocr);
-		if (err)
-			goto err;
-	}
+	err = mmc_send_io_op_cond(host, host->ocr, &ocr);
+	if (err)
+		goto err;
 
 	/*
 	 * For SPI, enable CRC as appropriate.
@@ -275,7 +273,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
 	/*
 	 * For native busses:  set card RCA and quit open drain mode.
 	 */
-	if (!powered_resume && !mmc_host_is_spi(host)) {
+	if (!mmc_host_is_spi(host)) {
 		err = mmc_send_relative_addr(host, &card->rca);
 		if (err)
 			goto remove;
@@ -286,7 +284,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
 	/*
 	 * Select card, as all following commands rely on that.
 	 */
-	if (!powered_resume && !mmc_host_is_spi(host)) {
+	if (!mmc_host_is_spi(host)) {
 		err = mmc_select_card(card);
 		if (err)
 			goto remove;
@@ -466,8 +464,7 @@ static int mmc_sdio_resume(struct mmc_host *host)
 
 	/* Basic card reinitialization. */
 	mmc_claim_host(host);
-	err = mmc_sdio_init_card(host, host->ocr, host->card,
-				 (host->pm_flags & MMC_PM_KEEP_POWER));
+	err = mmc_sdio_init_card(host, host->ocr, host->card);
 	mmc_release_host(host);
 
 	/*
@@ -537,7 +534,7 @@ int mmc_attach_sdio(struct mmc_host *host, u32 ocr)
 	/*
 	 * Detect and init the card.
 	 */
-	err = mmc_sdio_init_card(host, host->ocr, NULL, 0);
+	err = mmc_sdio_init_card(host, host->ocr, NULL);
 	if (err)
 		goto err;
 	card = host->card;
